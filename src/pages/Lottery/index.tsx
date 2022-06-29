@@ -35,6 +35,7 @@ import { SwitchLocaleLink } from 'components/SwitchLocaleLink'
 import { ZERO_ADDRESS } from 'constants/misc'
 import { useToken } from 'hooks/Tokens'
 import { CardSection, DataCard } from 'components/earn/styled'
+import { shortenAddress } from 'utils'
 
 const WrapperCard = styled.div`
   display: flex;
@@ -42,12 +43,10 @@ const WrapperCard = styled.div`
   margin: auto;
   width: 100%;
   min-height: 100%;
-  @media only screen and (max-width: 600pt) {
+  flex-direction: row;
+  ${({ theme }) => theme.mediaWidth.upToLarge`
     flex-direction: column;
-  }
-  @media only screen and (min-width: 600pt) {
-    flex-direction: row;
-  }
+  `};
 `
 
 const BodySectionCard = styled(LightGreyCard)`
@@ -55,10 +54,12 @@ const BodySectionCard = styled(LightGreyCard)`
   padding: 8px 12px;
   margin-top: 4px;
   margin-bottom: 4px;
-  @media only screen and (min-width: 600pt) {
-    margin-left: 20px;
-    margin-right: 20px;
-  }
+  margin-left: 20px;
+  margin-right: 20px;
+  ${({ theme }) => theme.mediaWidth.upToLarge`
+    margin-left: 0px;
+    margin-right: 0px;
+  `};
 `
 
 const ModalCard = styled(LightGreyCard)`
@@ -81,8 +82,23 @@ const PoolAmountCard = styled(LightCard)`
 `
 
 const TextTitle = styled(Text)`
-  font-size: 8pt;
+  font-size: 10pt;
   text-align: center;
+  ${({ theme }) => theme.mediaWidth.upToLarge`
+    font-size: 2.2vw;
+  `};
+`
+const TextValue = styled(Text)`
+  flex: 1;
+  text-align: center;
+  font-size: 18pt;
+  min-height: 21pt;
+  margin: 8pt !important;
+  ${({ theme }) => theme.mediaWidth.upToLarge`
+    font-size: 4vw;
+    min-height: 14pt;
+    margin: 4pt !important;
+  `};
 `
 
 const TextTitleBigger = styled(TextTitle)`
@@ -91,50 +107,30 @@ const TextTitleBigger = styled(TextTitle)`
   font-weight: 600;
   display: block;
   vertical-align: bottom;
-`
-const TextValue = styled(Text)`
-  flex: 1;
-  text-align: center;
-  @media only screen and (min-height: 600pt) {
-    font-size: 18pt;
-    min-height: 21pt;
-    margin: 8pt !important;
-  }
-  @media only screen and (max-height: 600pt) {
-    font-size: 12pt;
-    min-height: 14pt;
-    margin: 4pt !important;
-  }
+  ${({ theme }) => theme.mediaWidth.upToLarge`
+    font-size: 5vw;
+  `};
 `
 const TextValueBigger = styled(Text)`
   vertical-align: top;
   font-weight: 600;
   display: block;
   text-align: center;
-  @media only screen and (min-height: 600pt) {
-    font-size: 15pt;0
-    min-height: 15pt;
-    margin-top: 6pt !important;
-  }
-  @media only screen and (max-height: 600pt) {
-    font-size: 12pt;
+  
+  font-size: 15pt;0
+  min-height: 15pt;
+  margin-top: 6pt !important;
+  ${({ theme }) => theme.mediaWidth.upToLarge`
+    font-size: 4vw;
     min-height: 14pt;
     margin: 0pt !important;
-  }
+  `};
 `
 const TextValueLong = styled(TextValue)`
- @media only screen and (min-width: 504pt)  and (max-width: 600pt) {
   font-size: 12pt !important;
-}
-@media only screen and (max-width: 504pt) {
+  ${({ theme }) => theme.mediaWidth.upToLarge`
   font-size: 8pt !important;
-}
-@media only screen and (min-width: 600pt)  and (max-width: 800pt) {
- font-size: 8pt !important;
-}
-@media only screen and (min-width: 800pt){
- font-size: 12pt !important;
-}
+  `};
  `
 const TextWrapper = styled(ThemedText.Main)`
   ml: 6px;
@@ -155,6 +151,30 @@ const TopSection = styled(AutoColumn)`
 const InstructionCard = styled(DataCard)`
   background: radial-gradient(76.02% 75.41% at 1.84% 0%, #27ae60 0%, #000000 100%);
   overflow: hidden;
+`
+
+const SwitchLocaleLinkWrapper = styled(ThemedText.White)`
+  font-size: 13pt;
+  flex: "1";
+`
+
+export const ShortLotteryAddress = styled.span`
+  display: none;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    display: block;
+  `};
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+    font-size: 12pt;
+  `};
+`
+export const FullLotteryAddress = styled.span`
+  display: block;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    display: none;
+  `};
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    font-size: 16px;
+  `};
 `
 
 export default function Lottery({ history }: RouteComponentProps) {
@@ -293,7 +313,6 @@ export default function Lottery({ history }: RouteComponentProps) {
     return currency.toFixed(0, { groupSeparator: ',' }) + " " + currency.currency.symbol
   }
 
-
   function onLotteryListDismiss() {
     setShowLotteryList(false)
   }
@@ -316,9 +335,13 @@ export default function Lottery({ history }: RouteComponentProps) {
           <CardSection>
             <AutoColumn gap="md">
               <RowBetween>
-                <ThemedText.White fontWeight={600}>
+                <ThemedText.White fontSize={20} fontWeight={600}>
                   <Trans>Game Instructions</Trans>
                 </ThemedText.White>
+                <SwitchLocaleLinkWrapper>
+                  <SwitchLocaleLink />
+                </SwitchLocaleLinkWrapper>
+
               </RowBetween>
               <RowBetween>
                 <ThemedText.White fontSize={14}>
@@ -338,7 +361,7 @@ export default function Lottery({ history }: RouteComponentProps) {
               </RowBetween>
               <RowBetween>
                 <ExternalLink
-                  style={{ color: 'white', textDecoration: 'underline' }}
+                  style={{ color: 'white', textDecoration: 'underline', fontStyle: 'italic' }}
                   href="https://github.com/rchaindao/lottery"
                   target="_blank"
                 >
@@ -360,7 +383,12 @@ export default function Lottery({ history }: RouteComponentProps) {
                 ||
                 ((!selectedLottery || selectedLottery.length === 0) && <Trans>Select a Lottery</Trans>)
                 ||
-                <Trans>Lottery: {selectedLottery}</Trans>
+                (
+                  <>
+                    <ShortLotteryAddress><Trans>Lottery: {shortenAddress(selectedLottery || '')}</Trans></ShortLotteryAddress>
+                    <FullLotteryAddress><Trans>Lottery: {selectedLottery}</Trans></FullLotteryAddress>
+                  </>
+                )
               }
             </InlineText>
             {
@@ -541,7 +569,7 @@ export default function Lottery({ history }: RouteComponentProps) {
               )
             })}
           </RowBetween>
-          <CustomPage marginTop={5} onChangePage={handleChangePage} page={playerCurPage} size={playerPageSize} total={lotteryDetail?.playerCount} showJump={true} showEnds={true} showTotal={true} ></CustomPage>
+          <CustomPage marginTop={2} onChangePage={handleChangePage} page={playerCurPage} size={playerPageSize} total={lotteryDetail?.playerCount} showJump={true} showEnds={true} showTotal={true} ></CustomPage>
         </BodySectionCard>
       </WrapperCard>
       <Modal isOpen={showLotteryList} onDismiss={onLotteryListDismiss} minHeight={20}>
@@ -575,7 +603,6 @@ export default function Lottery({ history }: RouteComponentProps) {
           <CustomPage marginTop={5} onChangePage={handleChangeLotteryPage} page={lotteryCurPage} size={lotteryPageSize} total={lotteryCount} showJump={true} showEnds={true} showTotal={true} ></CustomPage>
         </ModalCard>
       </Modal>
-      <SwitchLocaleLink />
     </>
   )
 }

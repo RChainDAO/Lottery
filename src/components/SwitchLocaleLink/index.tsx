@@ -7,12 +7,8 @@ import { DEFAULT_LOCALE, LOCALE_LABEL, SupportedLocale } from '../../constants/l
 import { navigatorLocale, useActiveLocale } from '../../hooks/useActiveLocale'
 import { StyledInternalLink, ThemedText } from '../../theme'
 
-const Container = styled(ThemedText.Small)`
-  opacity: 0.6;
-  :hover {
-    opacity: 1;
-  }
-  margin-top: 1rem !important;
+const Container = styled(ThemedText.Label)`
+
 `
 
 const useTargetLocale = (activeLocale: SupportedLocale) => {
@@ -38,12 +34,23 @@ export function SwitchLocaleLink() {
 
   return (
     <Container>
-      <Trans>
-        RchainDao Lottery available in:{' '}
-        <StyledInternalLink onClick={onClick} to={to}>
-          {LOCALE_LABEL[targetLocale]}
-        </StyledInternalLink>
-      </Trans>
+      {
+        (activeLocale === "zh-CN" && (
+          <>
+            <StyledInternalLink onClick={onClick} to={to} color="#1f128d !important">
+              <ThemedText.Body color="#fff" display="inline" style={{ textDecoration: 'underline'}}>EN</ThemedText.Body>
+            </StyledInternalLink><span> / </span><ThemedText.Body color="#fff" display="inline" opacity="0.5">中文</ThemedText.Body>
+          </>
+        )
+        )
+        ||
+        <>
+          <ThemedText.Body color="#fff" display="inline"  opacity="0.5">EN</ThemedText.Body><span> / </span>
+          <StyledInternalLink onClick={onClick} to={to} color="#1f128d !important">
+            <ThemedText.Body color="#fff" display="inline"  style={{ textDecoration: 'underline'}}>中文</ThemedText.Body>
+          </StyledInternalLink>
+        </>
+      }
     </Container>
   )
 }

@@ -3,7 +3,7 @@ import './page.scss'
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { Box, Button, Link } from 'rebass/styled-components'
 import { RowBetween, RowFixed } from 'components/Row'
-import { ThemedText } from 'theme'
+import { NotSmallOnly, SmallOnly, ThemedText } from 'theme'
 import { Trans } from '@lingui/macro'
 import styled, { ThemeContext } from 'styled-components/macro'
 import { ButtonGray, ButtonLight, ButtonOutlined } from 'components/Button'
@@ -37,10 +37,26 @@ padding: 10pt;
 const ButtonLightArrow = styled(ButtonLight)`
     width：12pt;
     height: 10pt !important;
-    fontSize: 8pt !important;
     font-size: 10pt;
     padding: 10pt;
+    ${({ theme }) => theme.mediaWidth.upToSmall`
+        padding: 10pt;
+        font-size: 8pt;
+    `};
 `
+
+const PageLabel = styled(ThemedText.Main)`
+    font-size: 8pt;
+    ${({ theme }) => theme.text1};
+`
+
+const PageNumber = styled(Box)`
+    width: 40pt;
+${({ theme }) => theme.mediaWidth.upToSmall`
+    width: 30pt;
+`};
+`
+
 export default function CustomPage({
     onChangePage,
     page = 1,
@@ -60,7 +76,7 @@ export default function CustomPage({
     // showTotal
     // showEnds
 
-    const pageCount = Math.ceil(total/size)
+    const pageCount = Math.ceil(total / size)
     const enterKeyCallback = useCallback(
         (e) => {
             const value = e.target.value
@@ -83,7 +99,7 @@ export default function CustomPage({
                 if (parseInt(value) > 0) {
                     if (parseInt(value) > totalPage) {
                         onChangePage(totalPage)
-                        setJumpPage(totalPage+"")
+                        setJumpPage(totalPage + "")
                     } else {
                         onChangePage(parseInt(value))
                         setJumpPage(value)
@@ -95,12 +111,12 @@ export default function CustomPage({
         },
         [onChangePage]
     )
-    
+
     const go2Page = useCallback((p) => {
-        if(p > 0 && p <= pageCount){
+        if (p > 0 && p <= pageCount) {
             onChangePage(p)
         }
-    },[])
+    }, [])
 
     const nextPage = useCallback(
         () => {
@@ -109,7 +125,7 @@ export default function CustomPage({
         },
         [onChangePage]
     )
-    
+
     const prePage = useCallback(
         () => {
             const n = page - 1
@@ -161,80 +177,89 @@ export default function CustomPage({
     }, [page, total, size])
     const theme = useContext(ThemeContext)
     return (
-        <RowBetween marginTop={marginTop} marginBottom={2}>
-            <RowFixed>
-                {
-                    showTotal && <RowFixed>
-                        <ThemedText.Main ml="6px" fontSize="8pt" color={theme.text1}>
-                            <Trans>Total:</Trans>
-                        </ThemedText.Main>
-                        <ThemedText.Label ml="6px" fontSize="8pt" color={theme.text1}>
-                            {total}
-                        </ThemedText.Label>
-                        <ThemedText.Main ml="6px" fontSize="8pt" color={theme.text1}>
-                            <Trans>items</Trans>
-                        </ThemedText.Main>
+        <>
+            {showTotal && <SmallOnly>
+                <RowBetween marginTop={marginTop}>
+                    <RowFixed>
+                        <PageLabel ml="6px">
+                            <Trans>Total: {total} items</Trans>
+                        </PageLabel>
                     </RowFixed>
-                }
-                {showEnds && <RowFixed>
-                    <ThemedText.Main ml="6px" fontSize="8pt" color={theme.text1}>
-                        <ButtonLightArrow mr={2} onClick={firstPage}>{"<<"}</ButtonLightArrow>
-                    </ThemedText.Main>
-                </RowFixed>
-                }
+                </RowBetween>
+            </SmallOnly>
+            }
+
+            <RowBetween marginTop={marginTop} marginBottom={2}>
                 <RowFixed>
-                    <ThemedText.Main ml="6px" color={theme.text1}>
-                        <ButtonLightArrow mr={2} onClick={prePage}>{"<"}</ButtonLightArrow>
-                    </ThemedText.Main>
+                    {
+                        showTotal && <NotSmallOnly>
+                            <RowFixed>
+                                <PageLabel ml="6px">
+                                    <Trans>Total: {total} items</Trans>
+                                </PageLabel>
+                            </RowFixed>
+                        </NotSmallOnly>
+                    }
+                    {showEnds && <RowFixed>
+                        <PageLabel ml="6px">
+                            <ButtonLightArrow mr={2} onClick={firstPage}>{"<<"}</ButtonLightArrow>
+                        </PageLabel>
+                    </RowFixed>
+                    }
+                    <RowFixed>
+                        <PageLabel ml="6px">
+                            <ButtonLightArrow mr={2} onClick={prePage}>{"<"}</ButtonLightArrow>
+                        </PageLabel>
+                    </RowFixed>
+                    {
+                        pageArr.map(i =>
+                            <RowFixed key={i.valueOf()}>
+                                <PageLabel ml="6px">
+                                    {
+                                        page == i ?
+                                            <ButtonGrayNumber mr="0px">{i}</ButtonGrayNumber>
+                                            :
+                                            <ButtonOutlinedNumber mr={2} onClick={() => onChangePage(i.valueOf())}>{i}</ButtonOutlinedNumber>
+                                    }
+                                </PageLabel>
+                            </RowFixed>
+                        )
+                    }
+                    <RowFixed>
+                        <PageLabel ml="6px">
+                            <ButtonLightArrow mr={2} onClick={nextPage}>{">"}</ButtonLightArrow>
+                        </PageLabel>
+                    </RowFixed>
+                    {showEnds && <RowFixed>
+                        <PageLabel ml="6px">
+                            <ButtonLightArrow mr={2} onClick={lastPage}>{">>"}</ButtonLightArrow>
+                        </PageLabel>
+                    </RowFixed>
+                    }
+                    {showJump && <RowFixed>
+                        <PageLabel ml="6px">
+                            <Trans>go to</Trans>
+                        </PageLabel>
+                        <PageLabel ml="6px">
+                            <PageNumber marginLeft={1}>
+                                <Input
+                                    id='page'
+                                    name='page'
+                                    type='number'
+                                    placeholder='1'
+                                    value={jumpPage}
+                                    onChange={jumPageCallback}
+                                    onKeyPress={enterKeyCallback}
+                                />
+                            </PageNumber>
+                        </PageLabel>
+                        <PageLabel ml="6px">
+                            <Trans>page</Trans>
+                        </PageLabel>
+                    </RowFixed>
+                    }
                 </RowFixed>
-                {
-                    pageArr.map(i =>
-                        <RowFixed key={i.valueOf()}>
-                            <ThemedText.Main ml="6px" fontSize="8pt" color={theme.text1}>
-                                {
-                                    page == i ?
-                                    <ButtonGrayNumber mr="0px">{i}</ButtonGrayNumber>
-                                    :
-                                    <ButtonOutlinedNumber mr={2} onClick={()=>onChangePage(i.valueOf())}>{i}</ButtonOutlinedNumber>
-                                }
-                            </ThemedText.Main>
-                        </RowFixed>
-                    )
-                }
-                <RowFixed>
-                    <ThemedText.Main ml="6px" color={theme.text1}>
-                        <ButtonLightArrow mr={2} onClick={nextPage}>{">"}</ButtonLightArrow>
-                    </ThemedText.Main>
-                </RowFixed>
-                {showEnds && <RowFixed>
-                    <ThemedText.Main ml="6px" color={theme.text1}>
-                        <ButtonLightArrow mr={2} onClick={lastPage}>{">>"}</ButtonLightArrow>
-                    </ThemedText.Main>
-                </RowFixed>
-                }
-                {showJump && <RowFixed>
-                    <ThemedText.Main ml="6px" fontSize="8pt" color={theme.text1}>
-                        <Trans>go to</Trans>
-                    </ThemedText.Main>
-                    <ThemedText.Main ml="6px" fontSize="8pt" color={theme.text1}>
-                        <Box marginLeft={1} width="40pt">
-                            <Input
-                                id='page'
-                                name='page'
-                                type='number'
-                                placeholder='1'
-                                value={jumpPage}
-                                onChange={jumPageCallback} 
-                                onKeyPress={enterKeyCallback}
-                            />
-                        </Box>
-                    </ThemedText.Main>
-                    <ThemedText.Main ml="6px" fontSize="8pt" color={theme.text1}>
-                        <Trans>page</Trans>
-                    </ThemedText.Main>
-                </RowFixed>
-                }
-            </RowFixed>
-        </RowBetween>
+            </RowBetween>
+        </>
     )
 }

@@ -261,6 +261,12 @@ export const SmallOnly = styled.span`
     display: block;
   `};
 `
+export const NotSmallOnly = styled.span`
+  display: block;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    display: none;
+  `};
+`
 
 export const Separator = styled.div`
   width: 100%;
