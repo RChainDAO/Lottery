@@ -8,6 +8,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import {
   Check,
   ChevronLeft,
+  Globe,
   Info,
   Moon,
   Sun,
@@ -221,6 +222,12 @@ export default function Menu() {
               default:
                 return (
                   <MenuFlyout>
+                    {/* <ToggleMenuItem onClick={() => setMenu('lang')}>
+                      <div>
+                        <Trans>Language</Trans>
+                      </div>
+                      <Globe opacity={0.6} size={16} />
+                    </ToggleMenuItem> */}
                     <ToggleMenuItem onClick={() => toggleDarkMode()}>
                       <div>{darkMode ? <Trans>Light Theme</Trans> : <Trans>Dark Theme</Trans>}</div>
                       {darkMode ? <Moon opacity={0.6} size={16} /> : <Sun opacity={0.6} size={16} />}

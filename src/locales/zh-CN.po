@@ -23,6 +23,10 @@ msgstr "(在以太坊资源浏览器上查看)"
 msgid "(clear all)"
 msgstr "(全部清除)"
 
+#: src/pages/Lottery/index.tsx
+msgid "*Lottery pools are run on the blockchain. Our game code is fully open source. Final interpretation is at the organizer's discretion."
+msgstr "*抽奖池是在区块链上运行的。我们的游戏代码是完全开源的。最终解释权归组织者所有。"
+
 #: src/components/AccountDetails/index.tsx
 msgid "Account"
 msgstr "账户"
@@ -32,12 +36,20 @@ msgid "Address:"
 msgstr "地址:"
 
 #: src/pages/Lottery/index.tsx
+msgid "All participating RDAOs are accumulated in the lottery pool."
+msgstr "所有参与的 RDAOs 都会累积到抽奖池中。"
+
+#: src/pages/Lottery/index.tsx
 msgid "Approve"
 msgstr "批准"
 
 #: src/components/AccountDetails/TransactionSummary.tsx
 msgid "Approve {0}"
 msgstr "批准 {0}"
+
+#: src/pages/Lottery/index.tsx
+msgid "At the end of each round, one lucky player will be randomly selected by the blockchain."
+msgstr "在每一轮结束时，区块链将会随机选择一名幸运玩家。"
 
 #: src/components/Menu/index.tsx
 msgid "Version {APP_VERSION}"
@@ -111,9 +123,13 @@ msgstr "复制地址"
 msgid "Create"
 msgstr "创建彩票合约实例"
 
+#: src/pages/LotteryFactory/index.tsx
+msgid "Create Lottery"
+msgstr "创建彩票合约"
+
 #: src/pages/Lottery/index.tsx
 msgid "Current Pool Amount"
-msgstr "奖池金额"
+msgstr "目前奖池金额"
 
 #: src/components/Menu/index.tsx
 msgid "Dark Theme"
@@ -130,6 +146,10 @@ msgstr "将投票权委托给 {0}"
 #: src/components/AccountDetails/index.tsx
 msgid "Disconnect"
 msgstr "断开"
+
+#: src/pages/Lottery/index.tsx
+msgid "Each participant only needs to pay 100 RDAOs in order to participate."
+msgstr "每位参与者参加只需要支付 100 个 RDAOs。"
 
 #: src/components/Web3Status/index.tsx
 msgid "Error"
@@ -155,6 +175,10 @@ msgstr "无法从 Rdao 彩票页面切换网络。为了在 {0} 上使用 Rdao �
 #: src/pages/Lottery/index.tsx
 msgid "Finished"
 msgstr "已结束"
+
+#: src/pages/Lottery/index.tsx
+msgid "Game Instructions"
+msgstr "游戏说明"
 
 #: src/components/Header/NetworkSelector.tsx
 msgid "Help Center"
@@ -280,8 +304,8 @@ msgid "Current Pool Amount:"
 msgstr "当前奖池金额:"
 
 #: src/components/SwitchLocaleLink/index.tsx
-msgid "RchainDao Lottery available in: <0>{0}</0>"
-msgstr "RDao Lottery 可用：<0>{0}</0>"
+msgid "RDAO Lottery available in: <0>{0}</0>"
+msgstr "RDAO Lottery 可用：<0>{0}</0>"
 
 #: src/components/AccountDetails/index.tsx
 msgid "Recent Transactions"
@@ -359,17 +383,18 @@ msgstr "当前用于在 L1 上快速发送交易的 gas 价。 Gas 费用以以�
 msgid "The estimated difference between the USD values of input and output amounts."
 msgstr "输入和输出金额的美元价值之间的估计差异。"
 
-#: src/components/CurrencyInputPanel/index.tsx
-msgid "The market price is outside your specified price range. Single-asset deposit only."
-msgstr "市场兑换率超出您指定的范围。将只注入单项代币。"
+#: src/pages/Lottery/index.tsx
+msgid "The lottery pool will then automatically transfer all accumulated RDAOs to the lucky player."
+msgstr "抽奖池会自动转账所有累积的 RDAOs 给幸运玩家。"
 
 #: src/components/Header/Polling.tsx
 msgid "The most recent block number on this network. Prices update on every block."
 msgstr "此网络上的最新区块编号。兑换率会每区块都更新。"
 
 #: src/components/Pager/index.tsx
-msgid "Total:"
-msgstr "总条数:"
+#: src/components/Pager/index.tsx
+msgid "一共: {total} 条记录"
+msgstr "一共: {total} 条记录"
 
 #: src/components/WalletModal/PendingView.tsx
 msgid "Try Again"
@@ -395,6 +420,10 @@ msgstr "等待开奖"
 #: src/components/AddressInputPanel/index.tsx
 msgid "Wallet Address or ENS name"
 msgstr "钱包地址或 ENS 名"
+
+#: src/pages/Lottery/index.tsx
+msgid "When each round of the lottery pool begins, the organizer will transfer a certain amount of RDAOs to the lottery pool."
+msgstr "当每轮抽奖池开启，主办方会转入一定数量的 RDAOs。"
 
 #: src/pages/Lottery/index.tsx
 msgid "Winner"

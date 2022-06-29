@@ -25,11 +25,14 @@ const BodyWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  padding: 120px 16px 0px 16px;
+  padding: 150px 16px 0px 16px;
   align-items: center;
   flex: 1;
   z-index: 1;
 
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+  padding: 100px 16px 0px 16px;
+  `};
   ${({ theme }) => theme.mediaWidth.upToSmall`
     padding: 4rem 8px 16px 8px;
   `};

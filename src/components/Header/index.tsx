@@ -17,7 +17,7 @@ import NetworkSelector from './NetworkSelector'
 
 const HeaderFrame = styled.div<{ showBackground: boolean }>`
   display: grid;
-  grid-template-columns: 120px 1fr 120px;
+  grid-template-columns: 300px 1fr;
   align-items: center;
   justify-content: space-between;
   align-items: center;
@@ -25,7 +25,10 @@ const HeaderFrame = styled.div<{ showBackground: boolean }>`
   width: 100%;
   top: 0;
   position: relative;
-  padding: 1rem;
+  padding-left: 2rem;
+  padding-top: 1rem;
+  padding-right: 3rem;
+  padding-bottom: 1rem;
   z-index: 21;
   position: relative;
   /* Background slide effect on scroll. */
@@ -37,17 +40,15 @@ const HeaderFrame = styled.div<{ showBackground: boolean }>`
   background-blend-mode: hard-light;
 
   ${({ theme }) => theme.mediaWidth.upToLarge`
-    grid-template-columns: 48px 1fr 1fr;
+    grid-template-columns: 325px 1fr;
   `};
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
-    padding:  1rem;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 200px 1fr ;
   `};
 
   ${({ theme }) => theme.mediaWidth.upToSmall`
-    padding:  1rem;
-    grid-template-columns: 36px 1fr;
+    grid-template-columns: 100px 1fr;
   `};
 `
 
@@ -73,6 +74,12 @@ const HeaderElement = styled.div`
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     align-items: center;
+  `};
+`
+
+const HideSmallHeaderElement = styled(HeaderElement)`
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+  display: none;
   `};
 `
 
@@ -103,21 +110,29 @@ const Title = styled.a`
   pointer-events: auto;
   justify-self: flex-start;
   margin-right: 12px;
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    justify-self: center;
-  `};
   :hover {
     cursor: pointer;
   }
 `
 
-const UniIcon = styled.div`
+const RdaoLogo = styled.div`
   transition: transform 0.3s ease;
   :hover {
     transform: rotate(-5deg);
   }
-
+  width: 300px;
   position: relative;
+  ${({ theme }) => theme.mediaWidth.upToLarge`
+    width: 300px;
+  `};
+
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    width: 200px;
+  `};
+
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    width: 100px;
+  `};
 `
 
 export default function Header() {
@@ -136,15 +151,15 @@ export default function Header() {
   return (
     <HeaderFrame showBackground={scrollY > 45}>
       <Title href=".">
-        <UniIcon>
-          <Logo fill={darkMode ? white : black} width="256px" height="100%" title="logo" />
+        <RdaoLogo>
+          <Logo fill={darkMode ? white : black} width="100%" height="100%" title="logo" />
           <HolidayOrnament />
-        </UniIcon>
+        </RdaoLogo>
       </Title>
       <HeaderControls>
-        <HeaderElement>
+        <HideSmallHeaderElement>
           <NetworkSelector />
-        </HeaderElement>
+        </HideSmallHeaderElement>
         <HeaderElement>
           <AccountElement active={!!account}>
             {account && userEthBalance ? (

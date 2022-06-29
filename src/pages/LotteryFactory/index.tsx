@@ -37,17 +37,14 @@ const ContentWrapper = styled(AutoColumn)`
 
 const WrapperCard = styled.div`
   display: flex;
-  flex-direction: row;
   justify-content: space-between;
   margin: auto;
   width: 100%;
   min-height: 100%;
-  @media only screen and (max-width: 600pt) {
+  flex-direction: row;
+  ${({ theme }) => theme.mediaWidth.upToLarge`
     flex-direction: column;
-  }
-  @media only screen and (min-width: 600pt) {
-    flex-direction: row;
-  }
+  `};
 `
 
 const TextWrapper = styled(ThemedText.Main)`
@@ -62,10 +59,12 @@ const BodySectionCard = styled(LightGreyCard)`
   padding: 8px 12px;
   margin-top: 4px;
   margin-bottom: 4px;
-  @media only screen and (min-width: 600pt) {
-    margin-left: 20px;
-    margin-right: 20px;
-  }
+  margin-left: 20px;
+  margin-right: 20px;
+  ${({ theme }) => theme.mediaWidth.upToLarge`
+    margin-left: 0px;
+    margin-right: 0px;
+  `};
 `
 
 const FormRow = styled(RowBetween)`
@@ -216,7 +215,7 @@ export default function LotteryFactory({ history }: RouteComponentProps) {
     <>
       <WrapperCard>
         <BodySectionCard height="auto">
-          <Heading margin={3}>Create Lottery</Heading>
+          <Heading margin={3}><Trans>Create Lottery</Trans></Heading>
           <FormRow>
             <RowFixed>
               <TextWrapper>
@@ -337,7 +336,7 @@ export default function LotteryFactory({ history }: RouteComponentProps) {
                 )
               })}
           </RowBetween>
-          <CustomPage marginTop={5} onChangePage={handleChangePage} page={curPage} size={pageSize} total={lotteryCount} showJump={true} showEnds={true} showTotal={true} ></CustomPage>
+          <CustomPage marginTop={2} onChangePage={handleChangePage} page={curPage} size={pageSize} total={lotteryCount} showJump={true} showEnds={true} showTotal={true} ></CustomPage>
         </BodySectionCard>
       </WrapperCard>
 
