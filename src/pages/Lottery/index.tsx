@@ -394,7 +394,7 @@ export default function Lottery({ history }: RouteComponentProps) {
               {
                 (lotteryCount === 0 && <Trans>No Lottery Exist</Trans>)
                 ||
-                ((!selectedLottery || selectedLottery.length === 0) && <Trans>Select a Lottery</Trans>)
+                ((!selectedLottery || selectedLottery.length === 0) && <Trans>Select A Lottery Contract</Trans>)
                 ||
                 (
                   <>
