@@ -49,7 +49,7 @@ msgstr "批准 {0}"
 
 #: src/pages/Lottery/index.tsx
 msgid "At the end of each round, one lucky player will be randomly selected by the blockchain."
-msgstr "在每一轮结束时，区块链将会随机选择一名幸运玩家。"
+msgstr "在每一轮结束时，区块链将会抽选选择一名幸运玩家。"
 
 #: src/components/Menu/index.tsx
 msgid "Version {APP_VERSION}"
@@ -385,7 +385,7 @@ msgstr "输入和输出金额的美元价值之间的估计差异。"
 
 #: src/pages/Lottery/index.tsx
 msgid "The lottery pool will then automatically transfer all accumulated RDAOs to the lucky player."
-msgstr "抽奖池会自动转账所有累积的 RDAOs 给幸运玩家。"
+msgstr "抽奖池会自动转账所有池中累积的 RDAOs 给一名幸运玩家。"
 
 #: src/components/Header/Polling.tsx
 msgid "The most recent block number on this network. Prices update on every block."
@@ -559,3 +559,13 @@ msgstr "{0}%"
 #: src/pages/LotteryFactory/index.tsx
 msgid "{showLotteryAddress}"
 msgstr "{showLotteryAddress}"
+
+#: src/components/Pager/index.tsx
+#: src/components/Pager/index.tsx
+msgid "Show rows"
+msgstr "显示行数"
+
+#: src/components/Pager/index.tsx
+#: src/components/Pager/index.tsx
+msgid "Showing {0} - {1} out of {total}"
+msgstr "从{total} 中显示{0} - {1}"

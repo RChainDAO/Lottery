@@ -75,8 +75,8 @@ const FormRow = styled(RowBetween)`
 
 export default function LotteryFactory({ history }: RouteComponentProps) {
   const theme = useContext(ThemeContext)
-  const pageSize = 10
-  const [curPage, setCurPage] = useState(1)
+  const [lotteryPageSize, setLotteryPageSize] = useState(10)
+  const [curLotteryPage, setCurLotteryPage] = useState(1)
   const [errorMsg, setErrorMsg] = useState("")
   const { MIN_AMOUNT, LOTTERY_NAME, LOTTERY_MANAGER, LOTTERY_STARTTIME, LOTTERY_STOPTIME } = useLotteryFactoryLocalState()
   const { onUserInput } = useLotteryFactoryLocalActionHandlers()
@@ -89,7 +89,7 @@ export default function LotteryFactory({ history }: RouteComponentProps) {
   const lotteryFactoryAddress = (account && chainId) ? LOTTERY_FACTORY_ADDRESS[chainId] : undefined;
   const lotteryFactoryContract = useLotteryFactoryContract(lotteryFactoryAddress, true)
   const lotteryCount = useLotteryCount(lotteryFactoryContract)
-  const lotterise = useLotteryPage(curPage, pageSize, lotteryFactoryContract)
+  const lotterise = useLotteryPage(curLotteryPage, lotteryPageSize, lotteryFactoryContract)
   const coinAddress = (account && chainId) ? LOTTERY_COIN_ADDRESS[chainId] : undefined;
   const coinToken = useToken(coinAddress) || undefined
   const [showLotteryDetail, setShowLotteryDetail] = useState(false)
@@ -104,11 +104,16 @@ export default function LotteryFactory({ history }: RouteComponentProps) {
   )
 
   const handleChangePage = (page: number) => {
-    if (curPage !== page) {
-      setCurPage(page)
+    if (curLotteryPage !== page) {
+      setCurLotteryPage(page)
     }
   }
 
+  const handleChangeLotteryPageSize = useCallback((pageSize: number) => {
+    if (pageSize !== lotteryPageSize) {
+      setLotteryPageSize(pageSize)
+    }
+  }, [lotteryPageSize])
 
   const handleCreateLottery = useCallback(async () => {
     const quotient = parsedAmount?.quotient;
@@ -336,7 +341,7 @@ export default function LotteryFactory({ history }: RouteComponentProps) {
                 )
               })}
           </RowBetween>
-          <CustomPage marginTop={2} onChangePage={handleChangePage} page={curPage} size={pageSize} total={lotteryCount} showJump={true} showEnds={true} showTotal={true} ></CustomPage>
+          <CustomPage marginTop={2}  mutipleRow={false} onChangePage={handleChangePage} onChangePageSize={handleChangeLotteryPageSize}  page={curLotteryPage} size={lotteryPageSize} total={lotteryCount} showJump={true} showEnds={true} showTotal={true} ></CustomPage>
         </BodySectionCard>
       </WrapperCard>
 

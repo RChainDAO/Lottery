@@ -179,9 +179,10 @@ export const FullLotteryAddress = styled.span`
 
 export default function Lottery({ history }: RouteComponentProps) {
   const theme = useContext(ThemeContext)
-  const lotteryPageSize = 10;
-  const playerPageSize = 10
+  const [lotteryPageSize, setLotteryPageSize] = useState(10)
+  const [playerPageSize, setPlayerPageSize] = useState(10)
   const [playerCurPage, setPlayerCurPage] = useState(1)
+  console.log("playerCurPage", playerCurPage)
   const [lotteryCurPage, setLotteryCurPage] = useState(1)
   const [showLotteryList, setShowLotteryList] = useState(false)
 
@@ -277,14 +278,26 @@ export default function Lottery({ history }: RouteComponentProps) {
   }, [maxInputAmount, onUserInput])
 
   const handleChangePage = (page: number) => {
-    if (playerCurPage !== page) {
+    //if (playerCurPage !== page) {
       setPlayerCurPage(page)
-    }
+    //}
   }
 
   const handleChangeLotteryPage = (page: number) => {
     if (lotteryCurPage !== page) {
       setLotteryCurPage(page)
+    }
+  }
+
+  const handleChangeLotteryPageSize = (pageSize: number) => {
+    if (pageSize !== lotteryPageSize) {
+      setLotteryPageSize(pageSize)
+    }
+  }
+
+  const handleChangePlayerPageSize = (pageSize: number) => {
+    if (pageSize !== playerPageSize) {
+      setPlayerPageSize(pageSize)
     }
   }
 
@@ -569,7 +582,7 @@ export default function Lottery({ history }: RouteComponentProps) {
               )
             })}
           </RowBetween>
-          <CustomPage marginTop={2} onChangePage={handleChangePage} page={playerCurPage} size={playerPageSize} total={lotteryDetail?.playerCount} showJump={true} showEnds={true} showTotal={true} ></CustomPage>
+          <CustomPage marginTop={2}  mutipleRow={false} onChangePage={handleChangePage} onChangePageSize={handleChangePlayerPageSize} page={playerCurPage} size={playerPageSize} total={lotteryDetail?.playerCount} showJump={true} showEnds={true} showTotal={true} ></CustomPage>
         </BodySectionCard>
       </WrapperCard>
       <Modal isOpen={showLotteryList} onDismiss={onLotteryListDismiss} minHeight={20}>
@@ -600,7 +613,7 @@ export default function Lottery({ history }: RouteComponentProps) {
                 )
               })}
           </RowBetween>
-          <CustomPage marginTop={5} onChangePage={handleChangeLotteryPage} page={lotteryCurPage} size={lotteryPageSize} total={lotteryCount} showJump={true} showEnds={true} showTotal={true} ></CustomPage>
+          <CustomPage marginTop={5} mutipleRow={true} onChangePage={handleChangeLotteryPage} onChangePageSize={handleChangeLotteryPageSize} page={lotteryCurPage} size={lotteryPageSize} total={lotteryCount} showJump={true} showEnds={true} showTotal={true} ></CustomPage>
         </ModalCard>
       </Modal>
     </>
