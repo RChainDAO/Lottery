@@ -6,14 +6,19 @@ import { RowBetween, RowFixed } from 'components/Row'
 import { NotSmallOnly, SmallOnly, ThemedText } from 'theme'
 import { Trans } from '@lingui/macro'
 import styled, { ThemeContext } from 'styled-components/macro'
-import { ButtonGray, ButtonLight, ButtonOutlined } from 'components/Button'
+import { BaseButton, ButtonGray, ButtonLight, ButtonOutlined } from 'components/Button'
 import { Input } from '@rebass/forms'
 import { ReactComponent as ArrowRight } from '../../assets/images/arrow_right.svg'
 import { ReactComponent as ArrowLeft } from '../../assets/images/arrow_left.svg'
+import { FlyoutAlignment, NewMenu } from 'components/Menu'
+import { ChevronDown } from 'react-feather'
+import { ApplicationModal } from 'state/application/reducer'
+import { useToggleModal } from 'state/application/hooks'
 
 
 interface PageProps {
     onChangePage: (value: number) => void
+    onChangePageSize: (value: number) => void
     page: number | undefined
     size: number | undefined
     total: number | undefined
@@ -21,6 +26,7 @@ interface PageProps {
     showJump: boolean | undefined
     showTotal: boolean | undefined
     showEnds: boolean | undefined
+    mutipleRow: boolean | undefined
 }
 
 const ButtonGrayNumber = styled(ButtonGray)`
@@ -30,21 +36,35 @@ const ButtonGrayNumber = styled(ButtonGray)`
     padding: 12pt;
 `
 
+const ButtonEllipsis = styled(ButtonGray)`
+    width: 12pt;
+    height: 12pt;
+    font-size: 10pt;
+    padding: 12pt;
+    background-color: transparent;
+`
+
 const ButtonOutlinedNumber = styled(ButtonOutlined)`
 width: 12pt;
 height: 12pt;
-font-size: 10pt;
+font-size: 8pt;
 padding: 10pt;
 `
-const ButtonLightArrow = styled(ButtonLight)`
-    width：12pt;
-    height: 10pt !important;
-    font-size: 10pt;
-    padding: 10pt;
-    ${({ theme }) => theme.mediaWidth.upToSmall`
-        padding: 10pt;
-        font-size: 8pt;
-    `};
+
+const ButtonLightArrow = styled(ButtonOutlined)`
+    padding: 5px;
+    height: 22pt;
+    width: 22pt;
+    text-align: center;
+`
+
+const MenuItem = styled.div`
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  font-weight: 500;
+  font-size: 10pt;
 `
 
 const PageLabel = styled(ThemedText.Main)`
@@ -58,6 +78,7 @@ ${({ theme }) => theme.mediaWidth.upToSmall`
     width: 30pt;
 `};
 `
+
 const SmallCenter = styled(RowFixed)`
   ${({ theme }) => theme.mediaWidth.upToSmall`
     text-align: center;
@@ -65,9 +86,31 @@ const SmallCenter = styled(RowFixed)`
   `};
 `
 
+const Menu = styled(NewMenu)`
+  margin-left: 0;
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    flex: 1 1 auto;
+    width: 49%;
+    right: 0px;
+  `};
+
+  a {
+    width: 100%;
+  }
+`
+
+const MoreOptionsButton = styled(ButtonGray)`
+  border-radius: 12px;
+  flex: 1 1 auto;
+  padding: 6px 8px;
+  width: 100%;
+  background-color: ${({ theme }) => theme.bg0};
+  margin-right: 8px;
+`
 
 export default function CustomPage({
     onChangePage,
+    onChangePageSize,
     page = 1,
     size = 10,
     total = 0,
@@ -75,6 +118,7 @@ export default function CustomPage({
     showJump = true,
     showTotal = true,
     showEnds = true,
+    mutipleRow = false,
     ...rest
 }: PageProps) {
     // page ,number
@@ -86,41 +130,7 @@ export default function CustomPage({
     // showEnds
 
     const pageCount = Math.ceil(total / size)
-    const enterKeyCallback = useCallback(
-        (e) => {
-            const value = e.target.value
-            if (e.nativeEvent.keyCode === 13) {
-                if (value == '') {
-                    return
-                }
-                onChangePage(parseInt(value))
-                setJumpPage('')
-            }
-        },
-        [onChangePage]
-    )
-
-    const jumPageCallback = useCallback(
-        (e) => {
-            const value = e.target.value
-            const totalPage = Math.ceil(total / size)
-            if (value != '') {
-                if (parseInt(value) > 0) {
-                    if (parseInt(value) > totalPage) {
-                        onChangePage(totalPage)
-                        setJumpPage(totalPage + "")
-                    } else {
-                        onChangePage(parseInt(value))
-                        setJumpPage(value)
-                    }
-                }
-            } else {
-                setJumpPage('')
-            }
-        },
-        [onChangePage]
-    )
-
+    const toggle = useToggleModal(ApplicationModal.POOL_OVERVIEW_OPTIONS)
     const go2Page = useCallback((p) => {
         if (p > 0 && p <= pageCount) {
             onChangePage(p)
@@ -143,154 +153,233 @@ export default function CustomPage({
         [onChangePage]
     )
 
-    const lastPage = useCallback(
-        () => {
-            const n = pageCount
-            go2Page(n)
-        },
-        [onChangePage]
-    )
-
-    const firstPage = useCallback(
-        () => {
-            const n = 1
-            go2Page(n)
-        },
-        [onChangePage]
-    )
     const initPage: Number[] = [];
     const [pageArr, setPageArr] = useState(initPage)
-    const [jumpPage, setJumpPage] = useState('')
 
     function initializationPage() {
         const totalPage = Math.ceil(total / size)
-        let result = [];
-        if (totalPage < 11) {
-            for (let i = 0; i < totalPage; i++) {
-                result.push(i + 1);
-            }
-        } else if (page > 5 && (totalPage - page) > 3) {
-            result = [page - 5, page - 4, page - 3, page - 2, page - 1, page, page + 1, page + 2, page + 3, page + 4]
-        } else if (page > 5 && totalPage - page < 4) {
-            result = [totalPage - 9, totalPage - 8, totalPage - 7, totalPage - 6, totalPage - 5, totalPage - 4, totalPage - 3, totalPage - 2, totalPage - 1, totalPage]
-        } else if (page < 6 && totalPage > 9) {
-            for (let i = 0; i < 10; i++) {
-                result.push(i + 1);
-            }
+        const firstPage = 1
+        let result = [firstPage];
+        if (page > 4) {
+            result.push(0)
         }
+        if (page > 3) {
+            result.push(page - 2)
+            result.push(page - 1)
+        }
+        else if (page > 2) {
+            result.push(page - 1)
+        }
+        if (page > firstPage) {
+            result.push(page)
+        }
+        if (page + 1 < totalPage) {
+            result.push(page + 1)
+        }
+        if (page + 2 < totalPage) {
+            result.push(page + 2)
+        }
+        if (page + 3 < totalPage) {
+            result.push(0)
+        }
+        if (totalPage > page) {
+            result.push(totalPage)
+        }
+        // let leftPageLabel = page - 1
+        // let rightPageLabel = page + 1
+
+        // for(let i = 0; i < 2 && leftPageLabel > firstPage; i++){
+        //     leftPageLabel
+        // }
+        // if(leftPageLabel > firstPage){
+
+        // }
+        // if (totalPage < 11) {
+        //     for (let i = 0; i < totalPage; i++) {
+        //         result.push(i + 1);
+        //     }
+        // } else if (page > 5 && (totalPage - page) > 3) {
+        //     result = [page - 5, page - 4, page - 3, page - 2, page - 1, page, page + 1, page + 2, page + 3, page + 4]
+        // } else if (page > 5 && totalPage - page < 4) {
+        //     result = [totalPage - 9, totalPage - 8, totalPage - 7, totalPage - 6, totalPage - 5, totalPage - 4, totalPage - 3, totalPage - 2, totalPage - 1, totalPage]
+        // } else if (page < 6 && totalPage > 9) {
+        //     for (let i = 0; i < 10; i++) {
+        //         result.push(i + 1);
+        //     }
+        // }
         setPageArr(result)
     }
 
     useEffect(() => {
         initializationPage()
     }, [page, total, size])
-    const theme = useContext(ThemeContext)
+    const menuItems = [
+        {
+            content: (
+                <MenuItem>
+                    <Trans>10</Trans>
+                </MenuItem>
+            ),
+            external: false,
+            link: "#",
+            onClick: () => {
+                toggle()
+                onChangePageSize(10)
+                go2Page(1)
+            },
+        },
+        {
+            content: (
+                <MenuItem>
+                    <Trans>20</Trans>
+                </MenuItem>
+            ),
+            external: false,
+            link: "#",
+            onClick: () => {
+                toggle()
+                onChangePageSize(20)
+                go2Page(1)
+            },
+        },
+        {
+            content: (
+                <MenuItem>
+                    <Trans>50</Trans>
+                </MenuItem>
+            ),
+            external: false,
+            link: "#",
+            onClick: () => {
+                toggle()
+                onChangePageSize(50)
+                go2Page(1)
+            },
+        },
+    ]
     return (
-        <>
-            <SmallOnly>
-                <RowBetween marginTop={marginTop}>
-                    {showTotal && <RowFixed>
-                        <PageLabel ml="6px">
-                            <Trans>Total: {total} items</Trans>
-                        </PageLabel>
-                    </RowFixed>
-                    }
-                    {showJump && <RowFixed>
-                        <PageLabel ml="6px">
-                            <Trans>go to</Trans>
-                        </PageLabel>
-                        <PageLabel ml="6px">
-                            <PageNumber marginLeft={1}>
-                                <Input
-                                    id='page'
-                                    name='page'
-                                    type='number'
-                                    placeholder='1'
-                                    value={jumpPage}
-                                    onChange={jumPageCallback}
-                                    onKeyPress={enterKeyCallback}
-                                />
-                            </PageNumber>
-                        </PageLabel>
-                        <PageLabel ml="6px">
-                            <Trans>page</Trans>
-                        </PageLabel>
-                    </RowFixed>
-                    }
-                </RowBetween>
-            </SmallOnly>
-
+        !mutipleRow ? <>
             <RowBetween marginTop={marginTop} marginBottom={2}>
-                <SmallCenter>
+                <NotSmallOnly>
+                    <RowFixed style={{ minWidth: "120pt" }}>
+                        <PageLabel><Trans>Showing {((page - 1) * size + 1) > total ? total : ((page - 1) * size + 1)} - {(page * size) > total ? total : (page * size)} out of {total}</Trans></PageLabel>
+                    </RowFixed>
+                </NotSmallOnly>
+                <SmallOnly><RowFixed></RowFixed></SmallOnly>
+                <RowFixed>
+                    <ButtonLightArrow mr={2} onClick={prePage}><ArrowLeft /></ButtonLightArrow>
+
                     {
-                        showTotal && <NotSmallOnly>
-                            <RowFixed>
+                        pageArr.map((i, idx) =>
+                            <RowFixed key={idx.valueOf()}>
                                 <PageLabel ml="6px">
-                                    <Trans>Total: {total} items</Trans>
+                                    {
+                                        i === 0 ? <ButtonEllipsis mr="0px">...</ButtonEllipsis>
+                                            : (
+                                                page == i ?
+                                                    <ButtonGrayNumber mr="0px">{i}</ButtonGrayNumber>
+                                                    :
+                                                    <ButtonOutlinedNumber mr={2} onClick={() => onChangePage(i.valueOf())}>{i}</ButtonOutlinedNumber>
+                                            )
+                                    }
                                 </PageLabel>
                             </RowFixed>
-                        </NotSmallOnly>
+                        )
                     }
-                        {showEnds && <RowFixed>
-                            <PageLabel ml="6px">
-                                <ButtonLightArrow mr={2} onClick={firstPage}>{"<<"}</ButtonLightArrow>
-                            </PageLabel>
-                        </RowFixed>
-                        }
-                        <RowFixed>
-                            <PageLabel ml="6px">
-                                <ButtonLightArrow mr={2} onClick={prePage}>{"<"}</ButtonLightArrow>
-                            </PageLabel>
-                        </RowFixed>
-                        {
-                            pageArr.map(i =>
-                                <RowFixed key={i.valueOf()}>
-                                    <PageLabel ml="6px">
-                                        {
-                                            page == i ?
-                                                <ButtonGrayNumber mr="0px">{i}</ButtonGrayNumber>
-                                                :
-                                                <ButtonOutlinedNumber mr={2} onClick={() => onChangePage(i.valueOf())}>{i}</ButtonOutlinedNumber>
-                                        }
-                                    </PageLabel>
-                                </RowFixed>
-                            )
-                        }
-                        <RowFixed>
-                            <PageLabel ml="6px">
-                                <ButtonLightArrow mr={2} onClick={nextPage}>{">"}</ButtonLightArrow>
-                            </PageLabel>
-                        </RowFixed>
-                        {showEnds && <RowFixed>
-                            <PageLabel ml="6px">
-                                <ButtonLightArrow mr={2} onClick={lastPage}>{">>"}</ButtonLightArrow>
-                            </PageLabel>
-                        </RowFixed>
-                        }
-                    {showJump && <NotSmallOnly><RowFixed>
-                        <PageLabel ml="6px">
-                            <Trans>go to</Trans>
-                        </PageLabel>
-                        <PageLabel ml="6px">
-                            <PageNumber marginLeft={1}>
-                                <Input
-                                    id='page'
-                                    name='page'
-                                    type='number'
-                                    placeholder='1'
-                                    value={jumpPage}
-                                    onChange={jumPageCallback}
-                                    onKeyPress={enterKeyCallback}
-                                />
-                            </PageNumber>
-                        </PageLabel>
-                        <PageLabel ml="6px">
-                            <Trans>page</Trans>
-                        </PageLabel>
-                    </RowFixed></NotSmallOnly>
-                    }
-                </SmallCenter>
+                    <ButtonLightArrow ml={2} onClick={nextPage}><ArrowRight /></ButtonLightArrow>
+
+                </RowFixed>
+                <SmallOnly><RowFixed></RowFixed></SmallOnly>
+                <NotSmallOnly>
+                    <RowFixed style={{ minWidth: "90pt" }}>
+                        <PageLabel mr={2}><Trans>Show rows</Trans></PageLabel>
+                        <Menu
+                            menuItems={menuItems}
+                            flyoutAlignment={FlyoutAlignment.LEFT}
+                            ToggleUI={(props: any) => (
+                                <MoreOptionsButton {...props}>
+                                    <ThemedText.Body style={{ alignItems: 'center', display: 'flex', fontSize: "10pt" }}>
+                                        {size}
+                                        <ChevronDown size={15} />
+                                    </ThemedText.Body>
+                                </MoreOptionsButton>
+                            )}
+                        />
+                    </RowFixed>
+                </NotSmallOnly>
             </RowBetween>
+            <SmallOnly>
+                <RowBetween marginBottom={2}>
+                    <RowFixed style={{ minWidth: "120pt" }}>
+                        <PageLabel><Trans>Showing {(page - 1) * size + 1} - {page * size} out of {total}</Trans></PageLabel>
+                    </RowFixed>
+                    <RowFixed style={{ minWidth: "100pt" }}>
+                        <PageLabel mr={2}><Trans>Show rows</Trans></PageLabel>
+                        <Menu
+                            menuItems={menuItems}
+                            flyoutAlignment={FlyoutAlignment.LEFT}
+                            ToggleUI={(props: any) => (
+                                <MoreOptionsButton {...props}>
+                                    <ThemedText.Body style={{ alignItems: 'center', display: 'flex', fontSize: "10pt" }}>
+                                        {size}
+                                        <ChevronDown size={15} />
+                                    </ThemedText.Body>
+                                </MoreOptionsButton>
+                            )}
+                        />
+                    </RowFixed>
+                </RowBetween>
+            </SmallOnly>
         </>
+            :
+            <>
+            <RowBetween marginTop={marginTop} marginBottom={2}>
+                <RowFixed></RowFixed>
+                <RowFixed>
+                    <ButtonLightArrow mr={2} onClick={prePage}><ArrowLeft /></ButtonLightArrow>
+
+                    {
+                        pageArr.map((i, idx) =>
+                            <RowFixed key={idx.valueOf()}>
+                                <PageLabel ml="6px">
+                                    {
+                                        i === 0 ? <ButtonEllipsis mr="0px">...</ButtonEllipsis>
+                                            : (
+                                                page == i ?
+                                                    <ButtonGrayNumber mr="0px">{i}</ButtonGrayNumber>
+                                                    :
+                                                    <ButtonOutlinedNumber mr={2} onClick={() => onChangePage(i.valueOf())}>{i}</ButtonOutlinedNumber>
+                                            )
+                                    }
+                                </PageLabel>
+                            </RowFixed>
+                        )
+                    }
+                    <ButtonLightArrow ml={2} onClick={nextPage}><ArrowRight /></ButtonLightArrow>
+
+                </RowFixed>
+                <RowFixed></RowFixed>
+            </RowBetween>
+                <RowBetween marginBottom={2}>
+                    <RowFixed style={{ minWidth: "120pt" }}>
+                        <PageLabel><Trans>Showing {(page - 1) * size + 1} - {page * size} out of {total}</Trans></PageLabel>
+                    </RowFixed>
+                    <RowFixed style={{ minWidth: "100pt" }}>
+                        <PageLabel mr={2}><Trans>Show rows</Trans></PageLabel>
+                        <Menu
+                            menuItems={menuItems}
+                            flyoutAlignment={FlyoutAlignment.LEFT}
+                            ToggleUI={(props: any) => (
+                                <MoreOptionsButton {...props}>
+                                    <ThemedText.Body style={{ alignItems: 'center', display: 'flex', fontSize: "10pt" }}>
+                                        {size}
+                                        <ChevronDown size={15} />
+                                    </ThemedText.Body>
+                                </MoreOptionsButton>
+                            )}
+                        />
+                    </RowFixed>
+                </RowBetween>
+            </>
     )
 }

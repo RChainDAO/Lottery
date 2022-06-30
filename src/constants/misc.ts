@@ -17,4 +17,4 @@ export const BIG_INT_SECONDS_IN_WEEK = JSBI.BigInt(60 * 60 * 24 * 7)
 
 export const BIG_INT_ZERO = JSBI.BigInt(0)
 
-export const APP_VERSION = '1.0.8'
+export const APP_VERSION = '1.0.9'

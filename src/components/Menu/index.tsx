@@ -260,6 +260,7 @@ interface NewMenuProps {
     content: any
     link: string
     external: boolean
+    onClick: () => void | undefined
   }[]
 }
 
@@ -280,20 +281,20 @@ export const NewMenu = ({ flyoutAlignment = FlyoutAlignment.RIGHT, ToggleUI, men
   const node = useRef<HTMLDivElement>()
   const open = useModalOpen(ApplicationModal.POOL_OVERVIEW_OPTIONS)
   const toggle = useToggleModal(ApplicationModal.POOL_OVERVIEW_OPTIONS)
-  useOnClickOutside(node, open ? toggle : undefined)
+  //useOnClickOutside(node, open ? toggle : undefined)
   const ToggleElement = ToggleUI || StyledMenuIcon
   return (
     <StyledMenu ref={node as any} {...rest}>
       <ToggleElement onClick={toggle} />
       {open && (
         <NewMenuFlyout flyoutAlignment={flyoutAlignment}>
-          {menuItems.map(({ content, link, external }, i) =>
+          {menuItems.map(({ content, link, external, onClick }, i) =>
             external ? (
               <ExternalMenuItem href={link} key={i}>
                 {content}
               </ExternalMenuItem>
             ) : (
-              <NewMenuItem to={link} key={i}>
+              <NewMenuItem to={link} onClick={onClick} key={i}>
                 {content}
               </NewMenuItem>
             )
