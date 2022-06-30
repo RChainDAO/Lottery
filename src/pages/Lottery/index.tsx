@@ -164,7 +164,7 @@ export const ShortLotteryAddress = styled.span`
     display: block;
   `};
   ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-    font-size: 12pt;
+    font-size: 11pt;
   `};
 `
 export const FullLotteryAddress = styled.span`
@@ -546,7 +546,7 @@ export default function Lottery({ history }: RouteComponentProps) {
           <RowBetween marginTop={2} marginBottom={3}>
             <RowFixed>
               <ThemedText.Main ml="6px" fontSize="10pt" color={theme.text1}>
-                <Trans>Player list:</Trans>
+                <Trans>Players list:</Trans>
               </ThemedText.Main>
             </RowFixed>
           </RowBetween>

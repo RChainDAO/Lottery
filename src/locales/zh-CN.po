@@ -288,7 +288,7 @@ msgid "Player Count:"
 msgstr "玩家数量:"
 
 #: src/pages/Lottery/index.tsx
-msgid "Player list:"
+msgid "Players list:"
 msgstr "玩家列表:"
 
 #: src/pages/Lottery/index.tsx
@@ -393,8 +393,8 @@ msgstr "此网络上的最新区块编号。兑换率会每区块都更新。"
 
 #: src/components/Pager/index.tsx
 #: src/components/Pager/index.tsx
-msgid "一共: {total} 条记录"
-msgstr "一共: {total} 条记录"
+msgid "Total: {total} items"
+msgstr "总共: {total} 条记录"
 
 #: src/components/WalletModal/PendingView.tsx
 msgid "Try Again"
