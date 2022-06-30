@@ -8,6 +8,8 @@ import { Trans } from '@lingui/macro'
 import styled, { ThemeContext } from 'styled-components/macro'
 import { ButtonGray, ButtonLight, ButtonOutlined } from 'components/Button'
 import { Input } from '@rebass/forms'
+import { ReactComponent as ArrowRight } from '../../assets/images/arrow_right.svg'
+import { ReactComponent as ArrowLeft } from '../../assets/images/arrow_left.svg'
 
 
 interface PageProps {
@@ -56,12 +58,19 @@ ${({ theme }) => theme.mediaWidth.upToSmall`
     width: 30pt;
 `};
 `
+const SmallCenter = styled(RowFixed)`
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    text-align: center;
+    margin: 0 auto;
+  `};
+`
+
 
 export default function CustomPage({
     onChangePage,
     page = 1,
     size = 10,
-    total = 1,
+    total = 0,
     marginTop = 5,
     showJump = true,
     showTotal = true,
@@ -178,61 +187,11 @@ export default function CustomPage({
     const theme = useContext(ThemeContext)
     return (
         <>
-            {showTotal && <SmallOnly>
+            <SmallOnly>
                 <RowBetween marginTop={marginTop}>
-                    <RowFixed>
+                    {showTotal && <RowFixed>
                         <PageLabel ml="6px">
                             <Trans>Total: {total} items</Trans>
-                        </PageLabel>
-                    </RowFixed>
-                </RowBetween>
-            </SmallOnly>
-            }
-
-            <RowBetween marginTop={marginTop} marginBottom={2}>
-                <RowFixed>
-                    {
-                        showTotal && <NotSmallOnly>
-                            <RowFixed>
-                                <PageLabel ml="6px">
-                                    <Trans>Total: {total} items</Trans>
-                                </PageLabel>
-                            </RowFixed>
-                        </NotSmallOnly>
-                    }
-                    {showEnds && <RowFixed>
-                        <PageLabel ml="6px">
-                            <ButtonLightArrow mr={2} onClick={firstPage}>{"<<"}</ButtonLightArrow>
-                        </PageLabel>
-                    </RowFixed>
-                    }
-                    <RowFixed>
-                        <PageLabel ml="6px">
-                            <ButtonLightArrow mr={2} onClick={prePage}>{"<"}</ButtonLightArrow>
-                        </PageLabel>
-                    </RowFixed>
-                    {
-                        pageArr.map(i =>
-                            <RowFixed key={i.valueOf()}>
-                                <PageLabel ml="6px">
-                                    {
-                                        page == i ?
-                                            <ButtonGrayNumber mr="0px">{i}</ButtonGrayNumber>
-                                            :
-                                            <ButtonOutlinedNumber mr={2} onClick={() => onChangePage(i.valueOf())}>{i}</ButtonOutlinedNumber>
-                                    }
-                                </PageLabel>
-                            </RowFixed>
-                        )
-                    }
-                    <RowFixed>
-                        <PageLabel ml="6px">
-                            <ButtonLightArrow mr={2} onClick={nextPage}>{">"}</ButtonLightArrow>
-                        </PageLabel>
-                    </RowFixed>
-                    {showEnds && <RowFixed>
-                        <PageLabel ml="6px">
-                            <ButtonLightArrow mr={2} onClick={lastPage}>{">>"}</ButtonLightArrow>
                         </PageLabel>
                     </RowFixed>
                     }
@@ -258,7 +217,79 @@ export default function CustomPage({
                         </PageLabel>
                     </RowFixed>
                     }
-                </RowFixed>
+                </RowBetween>
+            </SmallOnly>
+
+            <RowBetween marginTop={marginTop} marginBottom={2}>
+                <SmallCenter>
+                    {
+                        showTotal && <NotSmallOnly>
+                            <RowFixed>
+                                <PageLabel ml="6px">
+                                    <Trans>Total: {total} items</Trans>
+                                </PageLabel>
+                            </RowFixed>
+                        </NotSmallOnly>
+                    }
+                        {showEnds && <RowFixed>
+                            <PageLabel ml="6px">
+                                <ButtonLightArrow mr={2} onClick={firstPage}>{"<<"}</ButtonLightArrow>
+                            </PageLabel>
+                        </RowFixed>
+                        }
+                        <RowFixed>
+                            <PageLabel ml="6px">
+                                <ButtonLightArrow mr={2} onClick={prePage}>{"<"}</ButtonLightArrow>
+                            </PageLabel>
+                        </RowFixed>
+                        {
+                            pageArr.map(i =>
+                                <RowFixed key={i.valueOf()}>
+                                    <PageLabel ml="6px">
+                                        {
+                                            page == i ?
+                                                <ButtonGrayNumber mr="0px">{i}</ButtonGrayNumber>
+                                                :
+                                                <ButtonOutlinedNumber mr={2} onClick={() => onChangePage(i.valueOf())}>{i}</ButtonOutlinedNumber>
+                                        }
+                                    </PageLabel>
+                                </RowFixed>
+                            )
+                        }
+                        <RowFixed>
+                            <PageLabel ml="6px">
+                                <ButtonLightArrow mr={2} onClick={nextPage}>{">"}</ButtonLightArrow>
+                            </PageLabel>
+                        </RowFixed>
+                        {showEnds && <RowFixed>
+                            <PageLabel ml="6px">
+                                <ButtonLightArrow mr={2} onClick={lastPage}>{">>"}</ButtonLightArrow>
+                            </PageLabel>
+                        </RowFixed>
+                        }
+                    {showJump && <NotSmallOnly><RowFixed>
+                        <PageLabel ml="6px">
+                            <Trans>go to</Trans>
+                        </PageLabel>
+                        <PageLabel ml="6px">
+                            <PageNumber marginLeft={1}>
+                                <Input
+                                    id='page'
+                                    name='page'
+                                    type='number'
+                                    placeholder='1'
+                                    value={jumpPage}
+                                    onChange={jumPageCallback}
+                                    onKeyPress={enterKeyCallback}
+                                />
+                            </PageNumber>
+                        </PageLabel>
+                        <PageLabel ml="6px">
+                            <Trans>page</Trans>
+                        </PageLabel>
+                    </RowFixed></NotSmallOnly>
+                    }
+                </SmallCenter>
             </RowBetween>
         </>
     )

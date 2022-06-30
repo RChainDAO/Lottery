@@ -13,7 +13,13 @@ import DarkModeQueryParamReader from '../theme/DarkModeQueryParamReader'
 import Lottery from './Lottery'
 import LotteryFactory from './LotteryFactory'
 import { RedirectPathToLotteryOnly } from './Lottery/redirects'
+import { MEDIA_WIDTHS } from 'theme'
 
+const PageWrapper = styled.div`
+  max-width: ${MEDIA_WIDTHS.upToLarge}px;
+  width: 100%;
+  margin: 0 auto;
+`
 
 const AppWrapper = styled.div`
   display: flex;
@@ -45,6 +51,7 @@ const HeaderWrapper = styled.div`
   position: fixed;
   top: 0;
   z-index: 2;
+  max-width: ${MEDIA_WIDTHS.upToLarge}px;
 `
 
 const Marginer = styled.div`
@@ -58,22 +65,24 @@ export default function App() {
       <Route component={DarkModeQueryParamReader} />
       <Route component={ApeModeQueryParamReader} />
       <Web3ReactManager>
-        <AppWrapper>
-          <HeaderWrapper>
-            <Header />
-          </HeaderWrapper>
-          <BodyWrapper>
-            <Polling />
-            <Suspense fallback={<Loader />}>
-              <Switch>
-                <Route exact strict path="/lottery" component={Lottery} />
-                <Route exact strict path="/lotteryfactory" component={LotteryFactory} />
-                <Route component={RedirectPathToLotteryOnly} />
-              </Switch>
-            </Suspense>
-            <Marginer />
-          </BodyWrapper>
-        </AppWrapper>
+        <PageWrapper>
+          <AppWrapper>
+            <HeaderWrapper>
+              <Header />
+            </HeaderWrapper>
+            <BodyWrapper>
+              <Polling />
+              <Suspense fallback={<Loader />}>
+                <Switch>
+                  <Route exact strict path="/lottery" component={Lottery} />
+                  <Route exact strict path="/lotteryfactory" component={LotteryFactory} />
+                  <Route component={RedirectPathToLotteryOnly} />
+                </Switch>
+              </Suspense>
+              <Marginer />
+            </BodyWrapper>
+          </AppWrapper>
+        </PageWrapper>
       </Web3ReactManager>
     </ErrorBoundary>
   )

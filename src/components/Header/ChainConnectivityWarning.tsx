@@ -37,7 +37,7 @@ const Wrapper = styled.div`
   display: none;
   max-width: 348px;
   padding: 16px 20px;
-  position: absolute;
+  position: fixed;
   right: 16px;
   @media screen and (min-width: ${MEDIA_WIDTHS.upToMedium}px) {
     display: block;
@@ -50,7 +50,7 @@ export function ChainConnectivityWarning() {
   const label = info?.label
 
   return (
-    <Wrapper>
+    <Wrapper style={{zIndex: 999}}>
       <TitleRow>
         <CautionIcon />
         <TitleText>

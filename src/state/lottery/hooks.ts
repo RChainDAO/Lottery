@@ -233,29 +233,17 @@ export function useLotteryPlayerPage(page?: number | undefined, pageSize?: numbe
     }, [page, pageSize])
     const playerResults = useSingleContractMultipleData(lotterycontract, "getPlayerInfoByIndex", idxArgs, undefined)
     const anyLoading: boolean = useMemo(() => playerResults.some((callState) => callState.loading), [playerResults])
-    const playerInfos = useMemo(() => {
-        return playerResults
-            .map(({ result }) => result)
-            //.filter((result): result is CallStateResult => !!result)
-            .map((result) => {
-                if (!result) {
-                    return {
-                        address: undefined,
-                        amount: undefined,
-                        entryTime: undefined,
-                        index: undefined
-                    }
-                }
-                const player: LotteryPlayer = {
-                    address: result[0],
-                    amount: result[1].toString(),
-                    entryTime: Number.parseInt(result[2].toString()),
-                    index: Number.parseInt(result[3].toString())
-                }
-                return player
-            })
-    }, [playerResults])
-    return [playerInfos, anyLoading]
+    const rr:LotteryPlayer[] = []
+    for(let i = 0; i < 10; i++){
+        const player: LotteryPlayer = {
+            address: "0x4b04F5df25EA6078F048E7cEC00d437Adb25C8a"+i,
+            amount: "100000000000000000000",
+            entryTime: new Date().getTime()/1000,
+            index: i
+        }
+        rr.push(player)
+    }
+    return [rr, anyLoading]
 }
 
 export function useLotteryDetailInfo(
@@ -313,6 +301,8 @@ export function useLotteryDetailInfo(
                     ret.state = LotteryState.WaitLucyDraw
                 }
             }
+            ret.playerCount = 100
+            console.log(ret)
             return ret
         },
         [token, nameResult, minAmountResult, lengthResult, prizeResult, winnerResult, startTimeResult, stopTimeResult, stateResult, managerResult]
