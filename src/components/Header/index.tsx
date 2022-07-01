@@ -10,6 +10,7 @@ import { Text } from 'rebass'
 import { useDarkModeManager } from 'state/user/hooks'
 import { useNativeCurrencyBalances } from 'state/wallet/hooks'
 import styled from 'styled-components/macro'
+import { NotMediumOnly, NotSmallOnly } from 'theme'
 
 import { ReactComponent as Logo } from '../../assets/svg/logo.svg'
 import Menu from '../Menu'
@@ -46,11 +47,7 @@ const HeaderFrame = styled.div<{ showBackground: boolean }>`
   `};
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
-    grid-template-columns: 200px 1fr ;
-  `};
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    grid-template-columns: 100px 1fr;
+    grid-template-columns: 20vw 1fr ;
   `};
 `
 
@@ -129,11 +126,7 @@ const RdaoLogo = styled.div`
   `};
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
-    width: 200px;
-  `};
-
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    width: 100px;
+    width: 20vw;
   `};
 `
 
@@ -174,8 +167,9 @@ export default function Header() {
             <Web3Status />
           </AccountElement>
         </HeaderElement>
-        <HeaderElement>
-          <ButtonTheme onClick={toggleDarkMode} />
+        <HeaderElement  onClick={toggleDarkMode} style={{cursor: "pointer"}}>
+          <NotMediumOnly style={{paddingLeft: "10px", fontSize: "12pt"}}>{darkMode ? <Trans>Light Theme</Trans> : <Trans>Dark Theme</Trans>}</NotMediumOnly>
+          <ButtonTheme/>
         </HeaderElement>
       </HeaderControls>
     </HeaderFrame>

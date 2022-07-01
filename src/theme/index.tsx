@@ -206,6 +206,9 @@ export const ThemedText = {
   Error({ error, ...props }: { error: boolean } & TextProps) {
     return <TextWrapper fontWeight={500} color={error ? 'red1' : 'text2'} {...props} />
   },
+  Language(props: TextProps) {
+    return <TextWrapper fontWeight={400} color={'text1'} {...props} />
+  },
 }
 
 export const ThemedGlobalStyle = createGlobalStyle`
