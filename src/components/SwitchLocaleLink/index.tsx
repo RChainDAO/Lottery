@@ -11,6 +11,22 @@ import { SUPPORTED_LOCALES } from 'constants/locales'
 const Container = styled(ThemedText.Label)`
 
 `
+const LanguageSeperater = styled.span`
+  color: #ffffff;
+  font-size: 16px;
+  
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    font-size: 10px;
+  `};
+`
+
+const Language = styled(ThemedText.Language)`
+  font-size: 16px;
+  
+  ${({ theme }) => theme.mediaWidth.upToMedium`
+    font-size: 10px;
+  `};
+`
 
 const useTargetLocale = (activeLocale: SupportedLocale) => {
   if(activeLocale ===  SUPPORTED_LOCALES[0]){
@@ -43,16 +59,16 @@ export function SwitchLocaleLink() {
         (activeLocale === "zh-CN" && (
           <>
             <StyledInternalLink onClick={onClick} to={to} color="#1f128d !important">
-              <ThemedText.Body color="#fff" display="inline" style={{ textDecoration: 'underline'}}>EN</ThemedText.Body>
-            </StyledInternalLink><span> / </span><ThemedText.Body color="#fff" display="inline" opacity="0.5">中文</ThemedText.Body>
+              <Language color="#fff" display="inline" style={{ textDecoration: 'underline'}}>EN</Language>
+            </StyledInternalLink><LanguageSeperater> / </LanguageSeperater><Language color="#fff" display="inline" opacity="0.5">中文</Language>
           </>
         )
         )
         ||
         <>
-          <ThemedText.Body color="#fff" display="inline"  opacity="0.5">EN</ThemedText.Body><span> / </span>
+          <Language color="#fff" display="inline"  opacity="0.5">EN</Language><LanguageSeperater> / </LanguageSeperater>
           <StyledInternalLink onClick={onClick} to={to} color="#1f128d !important">
-            <ThemedText.Body color="#fff" display="inline"  style={{ textDecoration: 'underline'}}>中文</ThemedText.Body>
+            <Language color="#fff" display="inline"  style={{ textDecoration: 'underline'}}>中文</Language>
           </StyledInternalLink>
         </>
       }

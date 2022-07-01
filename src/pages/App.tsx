@@ -74,7 +74,7 @@ export default function App() {
               <Polling />
               <Suspense fallback={<Loader />}>
                 <Switch>
-                  <Route exact strict path="/lottery" component={Lottery} />
+                  <Route exact strict path="/" component={Lottery} />
                   <Route exact strict path="/lotteryfactory" component={LotteryFactory} />
                   <Route component={RedirectPathToLotteryOnly} />
                 </Switch>

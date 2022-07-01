@@ -221,7 +221,6 @@ export default function CustomPage({
 
     return (
         !mutipleRow ? <>
-            <ButtonGrayNumber mr="0px">1</ButtonGrayNumber>
             <RowBetween marginTop={marginTop} marginBottom={2}>
                 <NotSmallOnly>
                     <RowFixed style={{ minWidth: "140px" }}>

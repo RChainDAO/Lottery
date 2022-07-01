@@ -161,7 +161,7 @@ export const DateInput = ({
   return (
     <div className={className}>
       <Input
-        type="date"
+        type="datetime-local"
         autoComplete="off"
         autoCorrect="off"
         autoCapitalize="off"

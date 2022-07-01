@@ -212,8 +212,9 @@ export default function Lottery({ history }: RouteComponentProps) {
 
   const handleApprove = useCallback(async () => {
     approveCallback().catch((err) => {
-      if (err && err.data) {
-        Toast(err.data.message)
+      const msg = (err?.result?.error?.message) ||  (err?.data?.message)
+      if(msg){
+        Toast(msg)
       }
     })
   }, [approveCallback])
@@ -236,8 +237,9 @@ export default function Lottery({ history }: RouteComponentProps) {
     let ok = true
     lotteryContract.participate(amount).catch((err) => {
       ok = false
-      if (err && err.data) {
-        Toast(err.data.message)
+      const msg = (err?.result?.error?.message) ||  (err?.data?.message)
+      if(msg){
+        Toast(msg)
       }
     }).finally(() => {
       if (ok) {
