@@ -567,5 +567,5 @@ msgstr "显示行数"
 
 #: src/components/Pager/index.tsx
 #: src/components/Pager/index.tsx
-msgid "Showing {0} - {1} out of {total}"
-msgstr "从{total} 中显示{0} - {1}"
+msgid "Showing {fromItemIdx} - {toItemIdx} out of {total}"
+msgstr "从{total} 中显示{fromItemIdx} - {toItemIdx}"

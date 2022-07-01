@@ -68,17 +68,19 @@ const ModalCard = styled(LightGreyCard)`
 `
 
 const DetailInfoRow = styled(RowBetween)`
-  margin-top: 4pt;
-  margin-bottom: 4pt;  
+  margin-top: 4px;
+  margin-bottom: 4px;  
 `
 
 const DetailInfoCard = styled(LightCard)`
   display: flex;
   flex-direction: column;
-  margin: 2pt;
+  margin: 2px;
+  padding: 10px;
 `
 const PoolAmountCard = styled(LightCard)`
-  margin: 2pt;
+  margin: 2px;
+  padding: 10px;
 `
 
 const TextTitle = styled(Text)`
@@ -92,8 +94,9 @@ const TextValue = styled(Text)`
   flex: 1;
   text-align: center;
   font-size: 18pt;
-  min-height: 21pt;
-  margin: 8pt !important;
+  min-height: 21px;
+  margin: 10px !important;
+  padding-top: 5px;
   ${({ theme }) => theme.mediaWidth.upToLarge`
     font-size: 4vw;
     min-height: 14pt;
@@ -108,7 +111,7 @@ const TextTitleBigger = styled(TextTitle)`
   display: block;
   vertical-align: bottom;
   ${({ theme }) => theme.mediaWidth.upToLarge`
-    font-size: 4vw;
+    font-size: 3.1vw;
   `};
 `
 const TextValueBigger = styled(Text)`
@@ -117,18 +120,19 @@ const TextValueBigger = styled(Text)`
   display: block;
   text-align: center;
   font-size: 16pt;
-  min-height: 18pt;
-  margin-top: 6pt !important;
+  min-height: 21px;
+  margin-top: 6px !important;
+  padding-bottom: 6px;
   ${({ theme }) => theme.mediaWidth.upToLarge`
     font-size: 3vw;
-    min-height: 14pt;
-    margin: 0pt !important;
+    margin-top: 0px !important;
+    padding-top: 6px;
   `};
 `
 const TextValueLong = styled(TextValue)`
   font-size: 14pt !important;
   ${({ theme }) => theme.mediaWidth.upToLarge`
-      font-size: 3.2vw !important;
+      font-size: 3vw !important;
   `};
  `
 const TextWrapper = styled(ThemedText.Main)`
@@ -181,7 +185,6 @@ export default function Lottery({ history }: RouteComponentProps) {
   const [lotteryPageSize, setLotteryPageSize] = useState(10)
   const [playerPageSize, setPlayerPageSize] = useState(10)
   const [playerCurPage, setPlayerCurPage] = useState(1)
-  console.log("playerCurPage", playerCurPage)
   const [lotteryCurPage, setLotteryCurPage] = useState(1)
   const [showLotteryList, setShowLotteryList] = useState(false)
 
@@ -278,7 +281,7 @@ export default function Lottery({ history }: RouteComponentProps) {
 
   const handleChangePage = (page: number) => {
     //if (playerCurPage !== page) {
-      setPlayerCurPage(page)
+    setPlayerCurPage(page)
     //}
   }
 
@@ -467,25 +470,6 @@ export default function Lottery({ history }: RouteComponentProps) {
             </FullRow>
           </DetailInfoRow>
           {
-            lotteryDetail?.state === LotteryState.Finish && <DetailInfoRow>
-              <FullRow>
-                <DetailInfoCard>
-                  <TextTitle><Trans>Winner</Trans></TextTitle>
-                  <TextValueLong>{
-                    (loadingLottery && <LoadingDataView />)
-                    ||
-                    ((lotteryDetail?.winner && lotteryDetail.winner !== ZERO_ADDRESS) &&<span style={{color: "rgb(200,84,213)", fontWeight:700}}>{lotteryDetail?.winner}</span>)
-                    ||
-                    ((lotteryDetail?.state && lotteryDetail?.state === LotteryState.Finish) && <Trans>No Winner</Trans>)
-                    ||
-                    <Trans>Not yet drawn</Trans>
-                  }
-                  </TextValueLong>
-                </DetailInfoCard>
-              </FullRow>
-            </DetailInfoRow>
-          }
-          {
             entryTime > 0 && (
               <DetailInfoRow>
                 <FullRow>
@@ -497,7 +481,25 @@ export default function Lottery({ history }: RouteComponentProps) {
               </DetailInfoRow>
             )
           }
-
+          {
+            lotteryDetail?.state === LotteryState.Finish && <DetailInfoRow>
+              <FullRow>
+                <DetailInfoCard>
+                  <TextTitle><Trans>Winner</Trans></TextTitle>
+                  <TextValueLong>{
+                    (loadingLottery && <LoadingDataView />)
+                    ||
+                    ((lotteryDetail?.winner && lotteryDetail.winner !== ZERO_ADDRESS) && <span style={{ color: "rgb(200,84,213)", fontWeight: 700 }}>{lotteryDetail?.winner}</span>)
+                    ||
+                    ((lotteryDetail?.state && lotteryDetail?.state === LotteryState.Finish) && <Trans>No Winner</Trans>)
+                    ||
+                    <Trans>Not yet drawn</Trans>
+                  }
+                  </TextValueLong>
+                </DetailInfoCard>
+              </FullRow>
+            </DetailInfoRow>
+          }
           {showConnectAWallet && (
             <ButtonPrimary marginTop={3} marginBottom={3} onClick={toggleWalletModal}>
               <Trans>Connect a wallet</Trans>
@@ -581,7 +583,7 @@ export default function Lottery({ history }: RouteComponentProps) {
               )
             })}
           </RowBetween>
-          <CustomPage marginTop={2}  mutipleRow={false} onChangePage={handleChangePage} onChangePageSize={handleChangePlayerPageSize} page={playerCurPage} size={playerPageSize} total={lotteryDetail?.playerCount} showJump={true} showEnds={true} showTotal={true} ></CustomPage>
+          <CustomPage marginTop={2} mutipleRow={false} onChangePage={handleChangePage} onChangePageSize={handleChangePlayerPageSize} page={playerCurPage} size={playerPageSize} total={lotteryDetail?.playerCount} showJump={true} showEnds={true} showTotal={true} ></CustomPage>
         </BodySectionCard>
       </WrapperCard>
       <Modal isOpen={showLotteryList} onDismiss={onLotteryListDismiss} minHeight={20}>

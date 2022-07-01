@@ -6,30 +6,35 @@ import styled from 'styled-components/macro'
 import { DEFAULT_LOCALE, LOCALE_LABEL, SupportedLocale } from '../../constants/locales'
 import { navigatorLocale, useActiveLocale } from '../../hooks/useActiveLocale'
 import { StyledInternalLink, ThemedText } from '../../theme'
+import { SUPPORTED_LOCALES } from 'constants/locales'
 
 const Container = styled(ThemedText.Label)`
 
 `
 
 const useTargetLocale = (activeLocale: SupportedLocale) => {
-  const browserLocale = useMemo(() => navigatorLocale(), [])
-
-  if (browserLocale && (browserLocale !== DEFAULT_LOCALE || activeLocale !== DEFAULT_LOCALE)) {
-    if (activeLocale === browserLocale) {
-      return DEFAULT_LOCALE
-    } else {
-      return browserLocale
-    }
+  if(activeLocale ===  SUPPORTED_LOCALES[0]){
+    return SUPPORTED_LOCALES[1]
   }
-  return null
+  else{
+    return SUPPORTED_LOCALES[0]
+  }
+  // const browserLocale = useMemo(() => navigatorLocale(), [])
+
+  // if (browserLocale && (browserLocale !== DEFAULT_LOCALE || activeLocale !== DEFAULT_LOCALE)) {
+  //   if (activeLocale === browserLocale) {
+  //     return DEFAULT_LOCALE
+  //   } else {
+  //     return browserLocale
+  //   }
+  // }
+  // return null
 }
 
 export function SwitchLocaleLink() {
   const activeLocale = useActiveLocale()
   const targetLocale = useTargetLocale(activeLocale)
-
   const { to, onClick } = useLocationLinkProps(targetLocale)
-
   if (!targetLocale || !to) return null
 
   return (

@@ -30,31 +30,31 @@ interface PageProps {
 }
 
 const ButtonGrayNumber = styled(ButtonGray)`
-    width: 26pt;
-    height: 26pt;
+    width: 26px;
+    height: 26px;
     font-size: 10pt;
-    padding: 12pt;
+    padding: 12px;
 `
 
 const ButtonEllipsis = styled(ButtonGray)`
-    width: 26pt;
-    height: 26pt;
+    width: 26px;
+    height: 26px;
     font-size: 10pt;
-    padding: 12pt;
+    padding: 12px;
     background-color: transparent;
 `
 
 const ButtonOutlinedNumber = styled(ButtonOutlined)`
-width: 26pt;
-height: 26pt;
+width: 26px;
+height: 26px;
 font-size: 8pt;
-padding: 10pt;
+padding: 10px;
 `
 
 const ButtonLightArrow = styled(ButtonOutlined)`
     padding: 6px;
-    height: 22pt;
-    width: 22pt;
+    height: 22px;
+    width: 22px;
     text-align: center;
 `
 
@@ -74,12 +74,6 @@ const PageLabel = styled(ThemedText.Main)`
 
 const Menu = styled(NewMenu)`
   margin-left: 0;
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    flex: 1 1 auto;
-    width: 49%;
-    right: 0px;
-  `};
-
   a {
     width: 100%;
   }
@@ -221,12 +215,17 @@ export default function CustomPage({
             },
         },
     ]
+
+    const fromItemIdx = ((page - 1) * size + 1) > total ? total : ((page - 1) * size + 1)
+    const toItemIdx = (page * size) > total ? total : (page * size)
+
     return (
         !mutipleRow ? <>
+            <ButtonGrayNumber mr="0px">1</ButtonGrayNumber>
             <RowBetween marginTop={marginTop} marginBottom={2}>
                 <NotSmallOnly>
-                    <RowFixed style={{ minWidth: "90pt" }}>
-                        <PageLabel><Trans>Showing {((page - 1) * size + 1) > total ? total : ((page - 1) * size + 1)} - {(page * size) > total ? total : (page * size)} out of {total}</Trans></PageLabel>
+                    <RowFixed style={{ minWidth: "140px" }}>
+                        <PageLabel><Trans>Showing {fromItemIdx} - {toItemIdx} out of {total}</Trans></PageLabel>
                     </RowFixed>
                 </NotSmallOnly>
                 <SmallOnly><RowFixed></RowFixed></SmallOnly>
@@ -255,11 +254,11 @@ export default function CustomPage({
                 </RowFixed>
                 <SmallOnly><RowFixed></RowFixed></SmallOnly>
                 <NotSmallOnly>
-                    <RowFixed style={{ minWidth: "90pt" }}>
+                    <RowFixed  style={{ minWidth: "140px", display:"flex", justifyContent:"flex-end" }}>
                         <PageLabel mr={2}><Trans>Show rows</Trans></PageLabel>
                         <Menu
                             menuItems={menuItems}
-                            flyoutAlignment={FlyoutAlignment.LEFT}
+                            flyoutAlignment={FlyoutAlignment.RIGHT}
                             ToggleUI={(props: any) => (
                                 <MoreOptionsButton {...props}>
                                     <ThemedText.Body style={{ alignItems: 'center', display: 'flex', fontSize: "10pt" }}>
@@ -275,7 +274,7 @@ export default function CustomPage({
             <SmallOnly>
                 <RowBetween marginBottom={2}>
                     <RowFixed>
-                        <PageLabel><Trans>Showing {(page - 1) * size + 1} - {page * size} out of {total}</Trans></PageLabel>
+                        <PageLabel><Trans>Showing {fromItemIdx} - {toItemIdx} out of {total}</Trans></PageLabel>
                     </RowFixed>
                     <RowFixed>
                         <PageLabel mr={2}><Trans>Show rows</Trans></PageLabel>
@@ -297,51 +296,39 @@ export default function CustomPage({
         </>
             :
             <>
-            <RowBetween marginTop={marginTop} marginBottom={2}>
-                <RowFixed></RowFixed>
-                <RowFixed>
-                    <ButtonLightArrow mr={2} onClick={prePage}><ArrowLeft /></ButtonLightArrow>
+                <RowBetween marginTop={marginTop} marginBottom={2}>
+                    <RowFixed></RowFixed>
+                    <RowFixed>
+                        <ButtonLightArrow mr={2} onClick={prePage}><ArrowLeft /></ButtonLightArrow>
 
-                    {
-                        pageArr.map((i, idx) =>
-                            <RowFixed key={idx.valueOf()}>
-                                <PageLabel>
-                                    {
-                                        i === 0 ? <ButtonEllipsis mr="0px">...</ButtonEllipsis>
-                                            : (
-                                                page == i ?
-                                                    <ButtonGrayNumber mr="0px">{i}</ButtonGrayNumber>
-                                                    :
-                                                    <ButtonOutlinedNumber mr={2} onClick={() => onChangePage(i.valueOf())}>{i}</ButtonOutlinedNumber>
-                                            )
-                                    }
-                                </PageLabel>
-                            </RowFixed>
-                        )
-                    }
-                    <ButtonLightArrow ml={2} onClick={nextPage}><ArrowRight /></ButtonLightArrow>
+                        {
+                            pageArr.map((i, idx) =>
+                                <RowFixed key={idx.valueOf()}>
+                                    <PageLabel>
+                                        {
+                                            i === 0 ? <ButtonEllipsis mr="0px">...</ButtonEllipsis>
+                                                : (
+                                                    page == i ?
+                                                        <ButtonGrayNumber mr="0px">{i}</ButtonGrayNumber>
+                                                        :
+                                                        <ButtonOutlinedNumber mr={2} onClick={() => onChangePage(i.valueOf())}>{i}</ButtonOutlinedNumber>
+                                                )
+                                        }
+                                    </PageLabel>
+                                </RowFixed>
+                            )
+                        }
+                        <ButtonLightArrow ml={2} onClick={nextPage}><ArrowRight /></ButtonLightArrow>
 
-                </RowFixed>
-                <RowFixed></RowFixed>
-            </RowBetween>
+                    </RowFixed>
+                    <RowFixed></RowFixed>
+                </RowBetween>
                 <RowBetween marginBottom={2}>
                     <RowFixed>
-                        <PageLabel><Trans>Showing {(page - 1) * size + 1} - {page * size} out of {total}</Trans></PageLabel>
+                        <PageLabel><Trans>Showing {fromItemIdx} - {toItemIdx} out of {total}</Trans></PageLabel>
                     </RowFixed>
                     <RowFixed>
-                        <PageLabel mr={2}><Trans>Show rows</Trans></PageLabel>
-                        <Menu
-                            menuItems={menuItems}
-                            flyoutAlignment={FlyoutAlignment.LEFT}
-                            ToggleUI={(props: any) => (
-                                <MoreOptionsButton {...props}>
-                                    <ThemedText.Body style={{ alignItems: 'center', display: 'flex', fontSize: "10pt" }}>
-                                        {size}
-                                        <ChevronDown size={15} />
-                                    </ThemedText.Body>
-                                </MoreOptionsButton>
-                            )}
-                        />
+
                     </RowFixed>
                 </RowBetween>
             </>
