@@ -128,8 +128,8 @@ msgid "Create Lottery"
 msgstr "创建彩票合约"
 
 #: src/pages/Lottery/index.tsx
-msgid "Current Pool Amount"
-msgstr "目前奖池金额"
+msgid "Pool Amount"
+msgstr "奖池累积"
 
 #: src/components/Menu/index.tsx
 msgid "Dark Theme"
@@ -300,8 +300,8 @@ msgid "Please connect to a supported network in the dropdown menu or in your wal
 msgstr "请在下拉菜单或您的钱包中连接到支持的网络。"
 
 #: src/pages/LotteryFactory/index.tsx
-msgid "Current Pool Amount:"
-msgstr "当前奖池金额:"
+msgid "Pool Amount:"
+msgstr "奖池累积:"
 
 #: src/components/SwitchLocaleLink/index.tsx
 msgid "RDAO Lottery available in: <0>{0}</0>"
@@ -320,8 +320,8 @@ msgid "Running"
 msgstr "活动中"
 
 #: src/pages/Lottery/index.tsx
-msgid "Select a Lottery"
-msgstr "选择一个彩票合约地址"
+msgid "Select A Lottery Contract"
+msgstr "选择一个彩票合约"
 
 #: src/components/Header/NetworkSelector.tsx
 msgid "Select a network"

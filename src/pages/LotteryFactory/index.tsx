@@ -381,7 +381,7 @@ export default function LotteryFactory({ history }: RouteComponentProps) {
             </AutoColumn>
             <AutoColumn justify="center" gap="md">
               <ThemedText.Body>
-                <Trans>Current Pool Amount:</Trans> <Trans>{detail?.prize?.toExact()}</Trans> <Trans>{coinToken?.symbol}</Trans>
+                <Trans>Pool Amount:</Trans> <Trans>{detail?.prize?.toExact()}</Trans> <Trans>{coinToken?.symbol}</Trans>
               </ThemedText.Body>
             </AutoColumn>
             <AutoColumn justify="center" gap="md">

@@ -1,9 +1,11 @@
 import { Trans } from '@lingui/macro'
 import useScrollPosition from '@react-hook/window-scroll'
+import { ButtonTheme } from 'components/Button'
 import { CHAIN_INFO } from 'constants/chainInfo'
 import { SupportedChainId } from 'constants/chains'
 import useActiveWeb3React from 'hooks/useActiveWeb3React'
 import useTheme from 'hooks/useTheme'
+import { useCallback } from 'react'
 import { Text } from 'rebass'
 import { useDarkModeManager } from 'state/user/hooks'
 import { useNativeCurrencyBalances } from 'state/wallet/hooks'
@@ -139,7 +141,7 @@ export default function Header() {
   const { account, chainId } = useActiveWeb3React()
 
   const userEthBalance = useNativeCurrencyBalances(account ? [account] : [])?.[account ?? '']
-  const [darkMode] = useDarkModeManager()
+  const [darkMode, toggleDarkMode] = useDarkModeManager()
   const { white, black } = useTheme()
 
   const scrollY = useScrollPosition()
@@ -173,7 +175,7 @@ export default function Header() {
           </AccountElement>
         </HeaderElement>
         <HeaderElement>
-          <Menu />
+          <ButtonTheme onClick={toggleDarkMode} />
         </HeaderElement>
       </HeaderControls>
     </HeaderFrame>
