@@ -231,6 +231,45 @@ export const ButtonText = styled(BaseButton)`
   }
 `
 
+export const ButtonTheme = styled.div`
+    margin-top: -2px;
+    position: relative;
+    background: transparent;
+    cursor: pointer;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    border: 0px;
+    outline: 0px;
+    margin-left: 10px;
+    
+  ::before, ::after{
+    position: absolute;
+    content: "";
+    top: 0px;
+    height: 100%;
+  }
+  ::before {
+    border-radius: 22px;
+    width: 22px;
+    height: 22px;
+    left: 0px;
+    border-width: 2px;
+    border-style: solid;
+    border-color:  ${({theme}) => theme.bg7};
+    z-index: 2;
+  }
+  ::after {
+    top: 2px;
+    left: 65%;
+    width: 50%;
+    height: 100%;
+    background-color: ${({theme}) => theme.bg7};
+    border-radius: 0px 20px 20px 0px;
+    z-index: 1;
+  }
+`
+
 const ButtonConfirmedStyle = styled(BaseButton)`
   background-color: ${({ theme }) => theme.bg3};
   color: ${({ theme }) => theme.text1};

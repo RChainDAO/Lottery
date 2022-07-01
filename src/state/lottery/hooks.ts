@@ -35,6 +35,7 @@ interface LotteryDetailInfo {
     startTime?: number | undefined
     stopTime?: number | undefined
     state?: LotteryState | undefined
+    totalAmount?: CurrencyAmount<Currency> | undefined
 }
 
 export function useLotteryLocalState(): AppState['lottery'] {
@@ -265,7 +266,7 @@ export function useLotteryDetailInfo(
     const nameResult = useSingleCallResult(lotterycontract, 'name', [])
     const lengthResult = useSingleCallResult(lotterycontract, 'getPlayersCount', [])
     const minAmountResult = useSingleCallResult(lotterycontract, 'minAmount', [])
-    //const prizeResult = useSingleCallResult(lotterycontract, 'prize', [])
+    const totalAmountResult = useSingleCallResult(lotterycontract, 'totalAmount', [])
     const coinContract = useTokenContract(token?.address, true)
     const prizeResult = useSingleCallResult(coinContract, 'balanceOf', [
         lotterycontract?.address ?? undefined,
@@ -275,7 +276,7 @@ export function useLotteryDetailInfo(
     const startTimeResult = useSingleCallResult(lotterycontract, 'startTime', [])
     const stopTimeResult = useSingleCallResult(lotterycontract, 'stopTime', [])
     const stateResult = useSingleCallResult(lotterycontract, 'lotteryState', [])
-    const anyLoading = nameResult.loading || lengthResult.loading || minAmountResult.loading || prizeResult.loading || managerResult.loading || winnerResult.loading || startTimeResult.loading || stopTimeResult.loading || stateResult.loading
+    const anyLoading = nameResult.loading || lengthResult.loading || minAmountResult.loading || totalAmountResult.loading || prizeResult.loading || managerResult.loading || winnerResult.loading || startTimeResult.loading || stopTimeResult.loading || stateResult.loading
     const retResult = useMemo(
         () => {
             const ret: LotteryDetailInfo = {}
@@ -288,8 +289,22 @@ export function useLotteryDetailInfo(
             if (minAmountResult.result && token) {
                 ret.minAmount = CurrencyAmount.fromRawAmount(token, JSBI.BigInt(minAmountResult.result.toString()))
             }
+            if (totalAmountResult.result && token) {
+                ret.totalAmount = CurrencyAmount.fromRawAmount(token, JSBI.BigInt(totalAmountResult.result.toString()))
+            }
             if (prizeResult.result && token) {
-                ret.prize = CurrencyAmount.fromRawAmount(token, JSBI.BigInt(prizeResult.result.toString()))
+                if(ret.totalAmount?.greaterThan(0)){
+
+                }
+                else{
+                    ret.prize = CurrencyAmount.fromRawAmount(token, JSBI.BigInt(prizeResult.result.toString()))
+                }
+            }
+            if (totalAmountResult.result && token) {
+                ret.totalAmount = CurrencyAmount.fromRawAmount(token, JSBI.BigInt(totalAmountResult.result.toString()))
+                if(ret.totalAmount?.greaterThan(0)){
+                    ret.prize = ret.totalAmount
+                }
             }
             if (managerResult.result) {
                 ret.manager = managerResult.result.toString()
@@ -315,7 +330,7 @@ export function useLotteryDetailInfo(
             }
             return ret
         },
-        [token, nameResult, minAmountResult, lengthResult, prizeResult, winnerResult, startTimeResult, stopTimeResult, stateResult, managerResult]
+        [token, nameResult, minAmountResult, lengthResult, prizeResult, totalAmountResult, winnerResult, startTimeResult, stopTimeResult, stateResult, managerResult]
     )
     return [retResult, anyLoading]
 }

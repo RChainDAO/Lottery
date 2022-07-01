@@ -30,29 +30,29 @@ interface PageProps {
 }
 
 const ButtonGrayNumber = styled(ButtonGray)`
-    width: 12pt;
-    height: 12pt;
+    width: 26pt;
+    height: 26pt;
     font-size: 10pt;
     padding: 12pt;
 `
 
 const ButtonEllipsis = styled(ButtonGray)`
-    width: 12pt;
-    height: 12pt;
+    width: 26pt;
+    height: 26pt;
     font-size: 10pt;
     padding: 12pt;
     background-color: transparent;
 `
 
 const ButtonOutlinedNumber = styled(ButtonOutlined)`
-width: 12pt;
-height: 12pt;
+width: 26pt;
+height: 26pt;
 font-size: 8pt;
 padding: 10pt;
 `
 
 const ButtonLightArrow = styled(ButtonOutlined)`
-    padding: 5px;
+    padding: 6px;
     height: 22pt;
     width: 22pt;
     text-align: center;
@@ -70,20 +70,6 @@ const MenuItem = styled.div`
 const PageLabel = styled(ThemedText.Main)`
     font-size: 8pt;
     ${({ theme }) => theme.text1};
-`
-
-const PageNumber = styled(Box)`
-    width: 40pt;
-${({ theme }) => theme.mediaWidth.upToSmall`
-    width: 30pt;
-`};
-`
-
-const SmallCenter = styled(RowFixed)`
-  ${({ theme }) => theme.mediaWidth.upToSmall`
-    text-align: center;
-    margin: 0 auto;
-  `};
 `
 
 const Menu = styled(NewMenu)`
@@ -185,28 +171,6 @@ export default function CustomPage({
         if (totalPage > page) {
             result.push(totalPage)
         }
-        // let leftPageLabel = page - 1
-        // let rightPageLabel = page + 1
-
-        // for(let i = 0; i < 2 && leftPageLabel > firstPage; i++){
-        //     leftPageLabel
-        // }
-        // if(leftPageLabel > firstPage){
-
-        // }
-        // if (totalPage < 11) {
-        //     for (let i = 0; i < totalPage; i++) {
-        //         result.push(i + 1);
-        //     }
-        // } else if (page > 5 && (totalPage - page) > 3) {
-        //     result = [page - 5, page - 4, page - 3, page - 2, page - 1, page, page + 1, page + 2, page + 3, page + 4]
-        // } else if (page > 5 && totalPage - page < 4) {
-        //     result = [totalPage - 9, totalPage - 8, totalPage - 7, totalPage - 6, totalPage - 5, totalPage - 4, totalPage - 3, totalPage - 2, totalPage - 1, totalPage]
-        // } else if (page < 6 && totalPage > 9) {
-        //     for (let i = 0; i < 10; i++) {
-        //         result.push(i + 1);
-        //     }
-        // }
         setPageArr(result)
     }
 
@@ -261,7 +225,7 @@ export default function CustomPage({
         !mutipleRow ? <>
             <RowBetween marginTop={marginTop} marginBottom={2}>
                 <NotSmallOnly>
-                    <RowFixed style={{ minWidth: "120pt" }}>
+                    <RowFixed style={{ minWidth: "90pt" }}>
                         <PageLabel><Trans>Showing {((page - 1) * size + 1) > total ? total : ((page - 1) * size + 1)} - {(page * size) > total ? total : (page * size)} out of {total}</Trans></PageLabel>
                     </RowFixed>
                 </NotSmallOnly>
@@ -272,7 +236,7 @@ export default function CustomPage({
                     {
                         pageArr.map((i, idx) =>
                             <RowFixed key={idx.valueOf()}>
-                                <PageLabel ml="6px">
+                                <PageLabel>
                                     {
                                         i === 0 ? <ButtonEllipsis mr="0px">...</ButtonEllipsis>
                                             : (
@@ -310,10 +274,10 @@ export default function CustomPage({
             </RowBetween>
             <SmallOnly>
                 <RowBetween marginBottom={2}>
-                    <RowFixed style={{ minWidth: "120pt" }}>
+                    <RowFixed>
                         <PageLabel><Trans>Showing {(page - 1) * size + 1} - {page * size} out of {total}</Trans></PageLabel>
                     </RowFixed>
-                    <RowFixed style={{ minWidth: "100pt" }}>
+                    <RowFixed>
                         <PageLabel mr={2}><Trans>Show rows</Trans></PageLabel>
                         <Menu
                             menuItems={menuItems}
@@ -341,7 +305,7 @@ export default function CustomPage({
                     {
                         pageArr.map((i, idx) =>
                             <RowFixed key={idx.valueOf()}>
-                                <PageLabel ml="6px">
+                                <PageLabel>
                                     {
                                         i === 0 ? <ButtonEllipsis mr="0px">...</ButtonEllipsis>
                                             : (
@@ -361,10 +325,10 @@ export default function CustomPage({
                 <RowFixed></RowFixed>
             </RowBetween>
                 <RowBetween marginBottom={2}>
-                    <RowFixed style={{ minWidth: "120pt" }}>
+                    <RowFixed>
                         <PageLabel><Trans>Showing {(page - 1) * size + 1} - {page * size} out of {total}</Trans></PageLabel>
                     </RowFixed>
-                    <RowFixed style={{ minWidth: "100pt" }}>
+                    <RowFixed>
                         <PageLabel mr={2}><Trans>Show rows</Trans></PageLabel>
                         <Menu
                             menuItems={menuItems}

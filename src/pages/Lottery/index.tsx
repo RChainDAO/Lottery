@@ -102,13 +102,13 @@ const TextValue = styled(Text)`
 `
 
 const TextTitleBigger = styled(TextTitle)`
-  font-size: 18pt;
+  font-size: 17pt;
   text-align: center;
-  font-weight: 600;
+  font-weight: 700;
   display: block;
   vertical-align: bottom;
   ${({ theme }) => theme.mediaWidth.upToLarge`
-    font-size: 5vw;
+    font-size: 4vw;
   `};
 `
 const TextValueBigger = styled(Text)`
@@ -116,20 +116,19 @@ const TextValueBigger = styled(Text)`
   font-weight: 600;
   display: block;
   text-align: center;
-  
-  font-size: 15pt;0
-  min-height: 15pt;
+  font-size: 16pt;
+  min-height: 18pt;
   margin-top: 6pt !important;
   ${({ theme }) => theme.mediaWidth.upToLarge`
-    font-size: 4vw;
+    font-size: 3vw;
     min-height: 14pt;
     margin: 0pt !important;
   `};
 `
 const TextValueLong = styled(TextValue)`
-  font-size: 12pt !important;
+  font-size: 14pt !important;
   ${({ theme }) => theme.mediaWidth.upToLarge`
-  font-size: 8pt !important;
+      font-size: 3.2vw !important;
   `};
  `
 const TextWrapper = styled(ThemedText.Main)`
@@ -462,7 +461,7 @@ export default function Lottery({ history }: RouteComponentProps) {
                 <TextValue>{loadingLottery ? <LoadingDataView /> : lotteryDetail?.playerCount}</TextValue>
               </DetailInfoCard>
               <PoolAmountCard flex="1" style={{ backgroundColor: theme.darkMode ? "rgb(74,230,200)" : "rgb(74,230,200)", color: "rgb(200,84,213)", verticalAlign: "middle" }}>
-                <TextTitleBigger><Trans>Current Pool Amount</Trans></TextTitleBigger>
+                <TextTitleBigger><Trans>Pool Amount</Trans></TextTitleBigger>
                 <TextValueBigger>{loadingLottery ? <LoadingDataView /> : currencyInfo(lotteryDetail?.prize)}</TextValueBigger>
               </PoolAmountCard>
             </FullRow>
@@ -475,7 +474,7 @@ export default function Lottery({ history }: RouteComponentProps) {
                   <TextValueLong>{
                     (loadingLottery && <LoadingDataView />)
                     ||
-                    ((lotteryDetail?.winner && lotteryDetail.winner !== ZERO_ADDRESS) && lotteryDetail?.winner)
+                    ((lotteryDetail?.winner && lotteryDetail.winner !== ZERO_ADDRESS) &&<span style={{color: "rgb(200,84,213)", fontWeight:700}}>{lotteryDetail?.winner}</span>)
                     ||
                     ((lotteryDetail?.state && lotteryDetail?.state === LotteryState.Finish) && <Trans>No Winner</Trans>)
                     ||
