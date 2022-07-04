@@ -6,4 +6,5 @@ export enum LotteryField {
 
 export const typeInput = createAction<{ field: LotteryField; typedValue: string }>('lottery/typeInput')
 export const selectLottery = createAction<{ lotteryAddress: string }>('lottery/selectLottery')
+export const refreshRemainTime = createAction<{ remainTime: number|undefined }>('lottery/remainTime')
 

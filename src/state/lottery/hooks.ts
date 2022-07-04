@@ -6,7 +6,7 @@ import JSBI from 'jsbi'
 import { Lottery } from 'abis/types'
 import { useCallback, useMemo } from 'react'
 import { AppState } from '../index'
-import { LotteryField, selectLottery, typeInput } from './actions'
+import { LotteryField, selectLottery, typeInput, refreshRemainTime } from './actions'
 
 const DEFAULT_PAGE_SIZE = 10
 
@@ -45,6 +45,7 @@ export function useLotteryLocalState(): AppState['lottery'] {
 export function useLotteryLocalActionHandlers(): {
     onUserInput: (field: LotteryField, typedValue: string) => void,
     onLotterySelection: (lotteryAddress: string) => void,
+    onRefreshRemainTime: (remainTime: number|undefined) => void,
 } {
     const dispatch = useAppDispatch()
 
@@ -66,9 +67,19 @@ export function useLotteryLocalActionHandlers(): {
         [dispatch]
     )
 
+    const onRefreshRemainTime = useCallback(
+        (remainTime: number|undefined) => {
+            dispatch(
+               refreshRemainTime({remainTime})
+            )
+        },
+        [dispatch]
+    )
+
     return {
         onUserInput,
         onLotterySelection,
+        onRefreshRemainTime,
     }
 }
 

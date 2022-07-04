@@ -32,8 +32,8 @@ msgid "Account"
 msgstr "账户"
 
 #: src/pages/LotteryFactory/index.tsx
-msgid "Address:"
-msgstr "地址:"
+msgid "Address"
+msgstr "地址"
 
 #: src/pages/Lottery/index.tsx
 msgid "All participating RDAOs are accumulated in the lottery pool."
@@ -127,6 +127,7 @@ msgstr "创建彩票合约实例"
 msgid "Create Lottery"
 msgstr "创建彩票合约"
 
+#: src/pages/LotteryFactory/index.tsx
 #: src/pages/Lottery/index.tsx
 msgid "Pool Amount"
 msgstr "奖池累积"
@@ -214,8 +215,8 @@ msgstr "彩票合约名称"
 
 #: src/pages/Lottery/index.tsx
 #: src/pages/LotteryFactory/index.tsx
-msgid "Lottery list:"
-msgstr "彩票合约列表:"
+msgid "Lotteries list"
+msgstr "彩票合约列表"
 
 #: src/pages/Lottery/index.tsx
 msgid "Lottery: {selectedLottery}"
@@ -226,8 +227,8 @@ msgid "MAX"
 msgstr "最大值"
 
 #: src/pages/LotteryFactory/index.tsx
-msgid "Manager:"
-msgstr "管理员:"
+msgid "Manager"
+msgstr "管理员"
 
 #: src/components/Menu/index.tsx
 msgid "Menu"
@@ -237,19 +238,14 @@ msgstr "菜单"
 msgid "Min Amount"
 msgstr "最小金额"
 
-#: src/pages/LotteryFactory/index.tsx
-#: src/pages/LotteryFactory/index.tsx
-msgid "Min Amount:"
-msgstr "最小金额:"
-
 #: src/pages/Lottery/index.tsx
 msgid "My Deposited"
 msgstr "我的质押"
 
 #: src/pages/LotteryFactory/index.tsx
 #: src/pages/LotteryFactory/index.tsx
-msgid "Name:"
-msgstr "名称:"
+msgid "Name"
+msgstr "名称"
 
 #: src/components/Header/ChainConnectivityWarning.tsx
 msgid "Network Warning"
@@ -283,13 +279,9 @@ msgstr "等待开始"
 msgid "Player Count"
 msgstr "玩家数量"
 
-#: src/pages/LotteryFactory/index.tsx
-msgid "Player Count:"
-msgstr "玩家数量:"
-
 #: src/pages/Lottery/index.tsx
-msgid "Players list:"
-msgstr "玩家列表:"
+msgid "Players list"
+msgstr "玩家列表"
 
 #: src/pages/Lottery/index.tsx
 msgid "Please approve firstly"
@@ -298,10 +290,6 @@ msgstr "请先授权"
 #: src/components/WalletModal/index.tsx
 msgid "Please connect to a supported network in the dropdown menu or in your wallet."
 msgstr "请在下拉菜单或您的钱包中连接到支持的网络。"
-
-#: src/pages/LotteryFactory/index.tsx
-msgid "Pool Amount:"
-msgstr "奖池累积:"
 
 #: src/components/SwitchLocaleLink/index.tsx
 msgid "RDAO Lottery available in: <0>{0}</0>"
@@ -335,37 +323,61 @@ msgstr "选择代币"
 msgid "Something went wrong"
 msgstr "出错了"
 
-#: src/pages/Lottery/index.tsx
+#: src/pages/LotteryFactory/index.tsx
 #: src/pages/LotteryFactory/index.tsx
 msgid "Start Time"
 msgstr "开始时间"
-
-#: src/pages/LotteryFactory/index.tsx
-#: src/pages/LotteryFactory/index.tsx
-msgid "Start Time:"
-msgstr "开始时间:"
 
 #: src/pages/Lottery/index.tsx
 msgid "State"
 msgstr "状态"
 
 #: src/pages/LotteryFactory/index.tsx
-msgid "State:"
-msgstr "状态:"
-
-#: src/pages/Lottery/index.tsx
 #: src/pages/LotteryFactory/index.tsx
 msgid "Stop Time"
 msgstr "结束时间"
 
+#: src/pages/Lottery/index.tsx
 #: src/pages/LotteryFactory/index.tsx
-#: src/pages/LotteryFactory/index.tsx
-msgid "Stop Time:"
-msgstr "结束时间:"
+msgid "Remaining Time"
+msgstr "剩余时间"
 
-#: src/components/AccountDetails/TransactionSummary.tsx
-msgid "Submit new proposal"
-msgstr "提交新提案"
+#: src/pages/Lottery/index.tsx
+msgid "Days"
+msgstr "天"
+
+#: src/pages/Lottery/index.tsx
+msgid "Day"
+msgstr "天"
+
+#: src/pages/Lottery/index.tsx
+msgid "Hours"
+msgstr "小时"
+
+#: src/pages/Lottery/index.tsx
+msgid "Hour"
+msgstr "小时"
+
+#: src/pages/Lottery/index.tsx
+msgid "Minutes"
+msgstr "分"
+
+#: src/pages/Lottery/index.tsx
+msgid "Minute"
+msgstr "分"
+
+#: src/pages/Lottery/index.tsx
+msgid "Seconds"
+msgstr "秒"
+
+#: src/pages/Lottery/index.tsx
+msgid "Second"
+msgstr "秒"
+
+#: src/pages/LotteryFactory/index.tsx
+#: src/pages/Lottery/index.tsx
+msgid "Pacific Time"
+msgstr "太平洋时间"
 
 #: src/components/WalletModal/index.tsx
 msgid "Tally"
@@ -428,10 +440,6 @@ msgstr "当每轮抽奖池开启，主办方会转入一定数量的 RDAOs。"
 #: src/pages/Lottery/index.tsx
 msgid "Winner"
 msgstr "获奖者"
-
-#: src/pages/LotteryFactory/index.tsx
-msgid "Winner:"
-msgstr "获奖者:"
 
 #: src/components/AccountDetails/TransactionSummary.tsx
 msgid "Wrap <0/> to {0}"

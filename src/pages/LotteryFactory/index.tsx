@@ -29,6 +29,7 @@ import { SwitchLocaleLink } from 'components/SwitchLocaleLink'
 import { LotteryFactoryField } from 'state/lotteryFactory/actions'
 import { isAddress } from 'utils'
 import { useToken } from 'hooks/Tokens'
+import { useActiveLocale } from 'hooks/useActiveLocale'
 
 const ContentWrapper = styled(AutoColumn)`
   width: 100%;
@@ -97,6 +98,7 @@ export default function LotteryFactory({ history }: RouteComponentProps) {
   const contract = useLotteryContract(showLotteryAddress)
   const [detail] = useLotteryDetailInfo(contract, coinToken)
   const [isLoadingLottery] = useState(!!detail?.name)
+  const locale = useActiveLocale()
 
   const parsedAmount = useMemo(
     () => tryParseCurrencyAmount(MIN_AMOUNT.typedValue, coinToken),
@@ -114,6 +116,41 @@ export default function LotteryFactory({ history }: RouteComponentProps) {
       setLotteryPageSize(pageSize)
     }
   }, [lotteryPageSize])
+
+  const pacificDateTimeString2Timestamp = (pacificDateTimeStr: string): number => {
+    const localDateTime = new Date(pacificDateTimeStr)
+    const localTimestamp = localDateTime.getTime()
+    const possibleOffset = [-7 * 60 * 60 * 1000, -8 * 60 * 60 * 1000]
+    for (const idx in possibleOffset) {
+      const pacificOffset = localDateTime.getTimezoneOffset() * 60 * 1000 + possibleOffset[idx]
+      const localDateTime2 = new Date(localTimestamp - pacificOffset)
+      const pacificDateTimeString = localDateTime2.toLocaleString("en-US", {
+        timeZone: "America/Los_Angeles", hourCycle: "h24"
+      })
+      const arrDateTime = pacificDateTimeString.split(/ |,|:/)
+      if (+arrDateTime[2] === localDateTime.getHours()) {
+        return localDateTime2.getTime()
+      }
+    }
+    return 0
+  }
+
+  const dateTimeDesc = (time: number | undefined) => {
+    if (!time || time === 0) {
+      return ""
+    }
+    else {
+      const dateFormat: Intl.DateTimeFormatOptions = {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        hourCycle: "h24"
+      }
+      return new Date(time * 1000).toLocaleString(locale, dateFormat)
+    }
+  }
 
   const handleCreateLottery = useCallback(async () => {
     const quotient = parsedAmount?.quotient;
@@ -144,7 +181,6 @@ export default function LotteryFactory({ history }: RouteComponentProps) {
     const amount = quotient ? quotient.toString() : "0"
     const startTimestamp = new Date(LOTTERY_STARTTIME.typedValue).getTime() / 1000
     const stopTimeStamp = new Date(LOTTERY_STOPTIME.typedValue).getTime() / 1000
-
     if (stopTimeStamp <= startTimestamp) {
       Toast(t`stop time should greater than start time`)
       return
@@ -165,7 +201,7 @@ export default function LotteryFactory({ history }: RouteComponentProps) {
         onUserInput(LotteryFactoryField.LOTTERY_NAME, "")
       }
     })
-  }, [LOTTERY_NAME.typedValue, LOTTERY_MANAGER.typedValue,LOTTERY_STARTTIME.typedValue,LOTTERY_STOPTIME.typedValue, coinToken, parsedAmount?.quotient, onUserInput, lotteryFactoryContract])
+  }, [LOTTERY_NAME.typedValue, LOTTERY_MANAGER.typedValue, LOTTERY_STARTTIME.typedValue, LOTTERY_STOPTIME.typedValue, coinToken, parsedAmount?.quotient, onUserInput, lotteryFactoryContract])
 
   const handleShowLottery = useCallback(
     (address: string) => {
@@ -177,7 +213,7 @@ export default function LotteryFactory({ history }: RouteComponentProps) {
   const wrappedOndismiss = () => {
     setShowLotteryDetail(false)
   }
-  
+
   const onErrorDismiss = () => {
     setErrorMsg("")
   }
@@ -205,6 +241,7 @@ export default function LotteryFactory({ history }: RouteComponentProps) {
 
   const handleTypeStartTime = useCallback(
     (value: string) => {
+      console.log(value)
       onUserInput(LotteryFactoryField.LOTTERY_STARTTIME, value)
     },
     [onUserInput]
@@ -224,7 +261,7 @@ export default function LotteryFactory({ history }: RouteComponentProps) {
           <FormRow>
             <RowFixed>
               <TextWrapper>
-                <Trans>Name:</Trans>
+                <Trans>Name</Trans>:
               </TextWrapper>
             </RowFixed>
             <RowFixed>
@@ -236,7 +273,7 @@ export default function LotteryFactory({ history }: RouteComponentProps) {
           <FormRow>
             <RowFixed>
               <TextWrapper>
-                <Trans>Manager:</Trans>
+                <Trans>Manager</Trans>:
               </TextWrapper>
             </RowFixed>
             <RowFixed>
@@ -248,7 +285,7 @@ export default function LotteryFactory({ history }: RouteComponentProps) {
           <FormRow>
             <RowFixed>
               <TextWrapper>
-                <Trans>Min Amount:</Trans>
+                <Trans>Min Amount</Trans>:
               </TextWrapper>
             </RowFixed>
             <RowFixed>
@@ -281,7 +318,7 @@ export default function LotteryFactory({ history }: RouteComponentProps) {
           <FormRow>
             <RowFixed>
               <TextWrapper>
-                <Trans>Start Time:</Trans>
+                <Trans>Start Time</Trans>:
               </TextWrapper>
             </RowFixed>
             <RowFixed>
@@ -293,7 +330,7 @@ export default function LotteryFactory({ history }: RouteComponentProps) {
           <FormRow>
             <RowFixed>
               <TextWrapper>
-                <Trans>Stop Time:</Trans>
+                <Trans>Stop Time</Trans>:
               </TextWrapper>
             </RowFixed>
             <RowFixed>
@@ -318,7 +355,7 @@ export default function LotteryFactory({ history }: RouteComponentProps) {
           <RowBetween marginTop={2} marginBottom={3}>
             <RowFixed>
               <TextWrapper>
-                <Trans>Lottery list:</Trans>
+                <Trans>Lotteries list</Trans>:
               </TextWrapper>
             </RowFixed>
           </RowBetween>
@@ -334,14 +371,14 @@ export default function LotteryFactory({ history }: RouteComponentProps) {
                         </span>
                       </ThemedText.Main>
                       <ThemedText.Main ml="6px" fontSize="12px" color={theme.text1}>
-                        <Trans>{!(a.createTime && a.createTime > 0) ? "" : new Date(a.createTime * 1000).toLocaleString()}</Trans>
+                        <Trans>{dateTimeDesc(a.createTime)}</Trans>
                       </ThemedText.Main>
                     </FullRow>
                   </RowBetween>
                 )
               })}
           </RowBetween>
-          <CustomPage marginTop={2}  mutipleRow={false} onChangePage={handleChangePage} onChangePageSize={handleChangeLotteryPageSize}  page={curLotteryPage} size={lotteryPageSize} total={lotteryCount} showJump={true} showEnds={true} showTotal={true} ></CustomPage>
+          <CustomPage marginTop={2} mutipleRow={false} onChangePage={handleChangePage} onChangePageSize={handleChangeLotteryPageSize} page={curLotteryPage} size={lotteryPageSize} total={lotteryCount} showJump={true} showEnds={true} showTotal={true} ></CustomPage>
         </BodySectionCard>
       </WrapperCard>
 
@@ -361,54 +398,54 @@ export default function LotteryFactory({ history }: RouteComponentProps) {
             </RowBetween>
             <AutoColumn justify="center" gap="md">
               <ThemedText.Body>
-                <Trans>Address:</Trans> <Trans>{showLotteryAddress}</Trans>
+                <Trans>Address</Trans>: <Trans>{showLotteryAddress}</Trans>
               </ThemedText.Body>
             </AutoColumn>
             <AutoColumn justify="center" gap="md">
               <ThemedText.Body>
-                <Trans>Name:</Trans> <Trans>{detail?.name}</Trans>
+                <Trans>Name</Trans>: <Trans>{detail?.name}</Trans>
               </ThemedText.Body>
             </AutoColumn>
             <AutoColumn justify="center" gap="md">
               <ThemedText.Body>
-                <Trans>Min Amount:</Trans> <Trans>{detail?.minAmount?.toExact()}</Trans> <Trans>{coinToken?.symbol}</Trans>
+                <Trans>Min Amount</Trans>: <Trans>{detail?.minAmount?.toExact()}</Trans> <Trans>{coinToken?.symbol}</Trans>
               </ThemedText.Body>
             </AutoColumn>
             <AutoColumn justify="center" gap="md">
               <ThemedText.Body>
-                <Trans>Player Count:</Trans> <Trans>{detail?.playerCount}</Trans>
+                <Trans>Player Count</Trans>: <Trans>{detail?.playerCount}</Trans>
               </ThemedText.Body>
             </AutoColumn>
             <AutoColumn justify="center" gap="md">
               <ThemedText.Body>
-                <Trans>Pool Amount:</Trans> <Trans>{detail?.prize?.toExact()}</Trans> <Trans>{coinToken?.symbol}</Trans>
+                <Trans>Pool Amount</Trans>: <Trans>{detail?.prize?.toExact()}</Trans> <Trans>{coinToken?.symbol}</Trans>
               </ThemedText.Body>
             </AutoColumn>
             <AutoColumn justify="center" gap="md">
               <ThemedText.Body>
-                <Text>Manager:</Text><Text style={{ height: "auto", overflow: "hidden", maxWidth: "620px", display: "inline-block", whiteSpace: "nowrap", textOverflow: "ellipsis", msTextOverflow: "ellipsis" }}>
+                <Trans>Manager</Trans>:<Text style={{ height: "auto", overflow: "hidden", maxWidth: "620px", display: "inline-block", whiteSpace: "nowrap", textOverflow: "ellipsis", msTextOverflow: "ellipsis" }}>
                   {detail?.manager}
                 </Text>
               </ThemedText.Body>
             </AutoColumn>
             <AutoColumn justify="center" gap="md">
               <ThemedText.Body>
-                <Trans>State:</Trans> {detail?.state === LotteryState.Running ? t`Running` : (detail?.state === LotteryState.Pausing ? t`Pausing` : t`Finished`)}
+                <Trans>State</Trans>: {detail?.state === LotteryState.Running ? t`Running` : (detail?.state === LotteryState.Pausing ? t`Pausing` : t`Finished`)}
               </ThemedText.Body>
             </AutoColumn>
             <AutoColumn justify="center" gap="md">
               <ThemedText.Body>
-                <Trans>Start Time:</Trans> <Trans>{new Date((!detail?.startTime || detail?.startTime === 0) ? 0 : detail?.startTime * 1000).toLocaleString()}</Trans>
+                <Trans>Start Time</Trans>: <Trans>{dateTimeDesc(detail?.startTime)}</Trans>
               </ThemedText.Body>
             </AutoColumn>
             <AutoColumn justify="center" gap="md">
               <ThemedText.Body>
-                <Trans>Stop Time:</Trans> <Trans>{new Date((!detail?.stopTime || detail?.stopTime === 0) ? 0 : detail?.stopTime * 1000).toLocaleString()}</Trans>
+                <Trans>Stop Time</Trans>: <Trans>{dateTimeDesc(detail?.stopTime)}</Trans>
               </ThemedText.Body>
             </AutoColumn>
             <AutoColumn justify="center" gap="md">
               <ThemedText.Body>
-                <Text><Trans>Winner:</Trans></Text><Text style={{ height: "auto", overflow: "hidden", maxWidth: "620px", display: "inline-block", whiteSpace: "nowrap", textOverflow: "ellipsis", msTextOverflow: "ellipsis" }}>
+                <Text><Trans>Winner</Trans>:</Text><Text style={{ height: "auto", overflow: "hidden", maxWidth: "620px", display: "inline-block", whiteSpace: "nowrap", textOverflow: "ellipsis", msTextOverflow: "ellipsis" }}>
                   {detail?.winner}
                 </Text>
               </ThemedText.Body>
