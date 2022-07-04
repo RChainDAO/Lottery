@@ -4,10 +4,9 @@ import { useSingleContractMultipleData, useSingleCallResult } from 'lib/hooks/mu
 import { useTokenContract } from 'hooks/useContract'
 import JSBI from 'jsbi'
 import { Lottery } from 'abis/types'
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useMemo } from 'react'
 import { AppState } from '../index'
 import { LotteryField, selectLottery, typeInput, refreshRemainTime } from './actions'
-import useInterval from 'lib/hooks/useInterval'
 
 const DEFAULT_PAGE_SIZE = 10
 

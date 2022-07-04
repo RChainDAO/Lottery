@@ -2,7 +2,7 @@
 import { t, Trans } from '@lingui/macro'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import useActiveWeb3React from 'hooks/useActiveWeb3React'
-import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { useCallback, useContext, useMemo, useState } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
 import { Text } from 'rebass'
 import styled, { ThemeContext } from 'styled-components/macro'
@@ -188,6 +188,16 @@ export const FullLotteryAddress = styled.span`
   `};
 `
 
+const Link = styled(ExternalLink)`
+  :hover {
+    text-decoration: none;
+  }
+
+  :focus {
+    outline: none;
+    text-decoration: none;
+}`
+
 export default function Lottery({ history }: RouteComponentProps) {
   const theme = useContext(ThemeContext)
   const [lotteryPageSize, setLotteryPageSize] = useState(10)
@@ -235,10 +245,16 @@ export default function Lottery({ history }: RouteComponentProps) {
   }, 1000)
 
   const handleApprove = useCallback(async () => {
-    approveCallback().catch((err) => {
+    let ok = true
+    await approveCallback().catch((err) => {
+      ok = false
       const msg = (err?.result?.error?.message) || (err?.data?.message)
       if (msg) {
         Toast(msg)
+      }
+    }).finally(() => {
+      if (ok) {
+        Toast(t`approve success, please wait the block confirm.`)
       }
     })
   }, [approveCallback])
@@ -361,28 +377,17 @@ export default function Lottery({ history }: RouteComponentProps) {
       const minDesc = min > 1 ? t`Minutes` : t`Minute`
       const secDesc = day > 1 ? t`Seconds` : t`Second`
       if (day > 0) {
-        return <>
-          <span>{day}</span> <span>{dayDesc}</span> <span>{hour}</span> <span>{hourDesc}</span>{locale === "en-US" ? <br /> : " "}<span>{min}</span> <span>{minDesc}</span>
-        </>
+        return day + " " + dayDesc + " " + hour + " " + hourDesc
       }
       else if (hour > 0) {
-        return hour + " " + hourDesc + " " + min + " " + minDesc
+        return hour + " " + hourDesc + " " + min + " " + minDesc + " "
       }
       else {
         return min + " " + minDesc + " " + sec + " " + secDesc
       }
     }
     return ""
-  }, [remainTime, lotteryDetail?.state])
-
-  const dateDesc = (time: number | undefined) => {
-    if (!time || time === 0) {
-      return ""
-    }
-    else {
-      return new Date(time * 1000).toLocaleDateString()
-    }
-  }
+  }, [remainTime, lotteryDetail?.state, locale])
 
   const currencyInfo = (currency: CurrencyAmount<Currency> | undefined) => {
     if (!currency) {
@@ -406,6 +411,7 @@ export default function Lottery({ history }: RouteComponentProps) {
     onLotterySelection(a.lotteryAddress ?? "")
     setShowLotteryList(false)
   }, [onUserInput, onLotterySelection, setShowLotteryList])
+
   return (
     <>
       <TopSection gap="md">
@@ -438,15 +444,15 @@ export default function Lottery({ history }: RouteComponentProps) {
                 </ThemedText.Yellow>
               </RowBetween>
               <RowBetween>
-                <ExternalLink
-                  style={{ color: 'white', textDecoration: 'underline', fontStyle: 'italic' }}
+                <Link
+                  style={{ color: 'white', paddingBottom: '2px', borderBottom: "solid 1px", fontStyle: 'italic' }}
                   href="https://github.com/rchaindao/lottery"
                   target="_blank"
                 >
                   <ThemedText.White fontSize={14}>
                     <Trans>https://github.com/rchaindao/lottery</Trans>
                   </ThemedText.White>
-                </ExternalLink>
+                </Link>
               </RowBetween>
             </AutoColumn>
           </CardSection>
@@ -512,7 +518,7 @@ export default function Lottery({ history }: RouteComponentProps) {
               </DetailInfoCard>
               <DetailInfoCard flex="1" width="100%">
                 <TextTitle><Trans>Remaining Time</Trans></TextTitle>
-                <TimeValue>{(loadingLottery || remainTime === undefined) ? <LoadingDataView /> : remainTimeStr}</TimeValue>
+                <TimeValue>{(loadingLottery) ? <LoadingDataView /> : remainTimeStr}</TimeValue>
               </DetailInfoCard>
             </FullRow>
           </DetailInfoRow>
@@ -578,7 +584,7 @@ export default function Lottery({ history }: RouteComponentProps) {
                   </ThemedText.Main>
                 </FullRow>
               </RowBetween>
-              <ButtonPrimary marginTop={3} marginBottom={3} onClick={handleApprove}>
+              <ButtonPrimary disabled={approvalState === ApprovalState.PENDING} marginTop={3} marginBottom={3} onClick={handleApprove}>
                 <ThemedText.Label mb="4px">
                   <Trans>Approve</Trans>
                 </ThemedText.Label>
