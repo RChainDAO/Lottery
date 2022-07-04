@@ -10,7 +10,6 @@ import {
   ClaimTransactionInfo,
   CollectFeesTransactionInfo,
   DelegateTransactionInfo,
-  SubmitProposalTransactionInfo,
   TransactionInfo,
   TransactionType,
   WrapTransactionInfo,
@@ -48,10 +47,6 @@ function ClaimSummary({ info: { recipient, uniAmountRaw } }: { info: ClaimTransa
   ) : (
     <Trans>Claim UNI reward for {ENSName ?? recipient}</Trans>
   )
-}
-
-function SubmitProposalTransactionSummary(_: { info: SubmitProposalTransactionInfo }) {
-  return <Trans>Submit new proposal</Trans>
 }
 
 function ApprovalSummary({ info }: { info: ApproveTransactionInfo }) {
@@ -124,8 +119,5 @@ export function TransactionSummary({ info }: { info: TransactionInfo }) {
 
     case TransactionType.COLLECT_FEES:
       return <CollectFeesSummary info={info} />
-
-    case TransactionType.SUBMIT_PROPOSAL:
-      return <SubmitProposalTransactionSummary info={info} />
   }
 }

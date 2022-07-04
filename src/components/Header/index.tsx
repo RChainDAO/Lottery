@@ -20,7 +20,7 @@ import NetworkSelector from './NetworkSelector'
 
 const HeaderFrame = styled.div<{ showBackground: boolean }>`
   display: grid;
-  grid-template-columns: 300px 1fr;
+  grid-template-columns: 200px 1fr;
   align-items: center;
   justify-content: space-between;
   align-items: center;
@@ -43,7 +43,7 @@ const HeaderFrame = styled.div<{ showBackground: boolean }>`
   background-blend-mode: hard-light;
 
   ${({ theme }) => theme.mediaWidth.upToLarge`
-    grid-template-columns: 325px 1fr;
+    grid-template-columns: 200px 1fr;
   `};
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
@@ -119,10 +119,10 @@ const RdaoLogo = styled.div`
   :hover {
     transform: rotate(-5deg);
   }
-  width: 300px;
+  width: 200px;
   position: relative;
   ${({ theme }) => theme.mediaWidth.upToLarge`
-    width: 300px;
+    width: 200px;
   `};
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
@@ -168,7 +168,6 @@ export default function Header() {
           </AccountElement>
         </HeaderElement>
         <HeaderElement  onClick={toggleDarkMode} style={{cursor: "pointer"}}>
-          <NotMediumOnly style={{paddingLeft: "10px", fontSize: "12pt"}}>{darkMode ? <Trans>Light Theme</Trans> : <Trans>Dark Theme</Trans>}</NotMediumOnly>
           <ButtonTheme/>
         </HeaderElement>
       </HeaderControls>

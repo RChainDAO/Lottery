@@ -57,17 +57,12 @@ export interface CollectFeesTransactionInfo {
   currencyId1: string
 }
 
-export interface SubmitProposalTransactionInfo {
-  type: TransactionType.SUBMIT_PROPOSAL
-}
-
 export type TransactionInfo =
   | ApproveTransactionInfo
   | ClaimTransactionInfo
   | DelegateTransactionInfo
   | WrapTransactionInfo
   | CollectFeesTransactionInfo
-  | SubmitProposalTransactionInfo
 
 export interface TransactionDetails {
   hash: string

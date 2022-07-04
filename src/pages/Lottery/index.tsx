@@ -2,7 +2,7 @@
 import { t, Trans } from '@lingui/macro'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import useActiveWeb3React from 'hooks/useActiveWeb3React'
-import { useCallback, useContext, useMemo, useState } from 'react'
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
 import { Text } from 'rebass'
 import styled, { ThemeContext } from 'styled-components/macro'
@@ -36,6 +36,8 @@ import { ZERO_ADDRESS } from 'constants/misc'
 import { useToken } from 'hooks/Tokens'
 import { CardSection, DataCard } from 'components/earn/styled'
 import { shortenAddress } from 'utils'
+import useInterval from 'lib/hooks/useInterval'
+import { useActiveLocale } from 'hooks/useActiveLocale'
 
 const WrapperCard = styled.div`
   display: flex;
@@ -99,8 +101,14 @@ const TextValue = styled(Text)`
   padding-top: 5px;
   ${({ theme }) => theme.mediaWidth.upToLarge`
     font-size: 4vw;
-    min-height: 14pt;
     margin: 4pt !important;
+  `};
+`
+
+const TimeValue = styled(TextValue)`
+  min-height: 42px;
+  ${({ theme }) => theme.mediaWidth.upToLarge`
+  min-height: 8vw;
   `};
 `
 
@@ -191,8 +199,8 @@ export default function Lottery({ history }: RouteComponentProps) {
   const { account, chainId } = useActiveWeb3React()
   const toggleWalletModal = useWalletModalToggle()
   const showConnectAWallet = Boolean(!account)
-  const { AMOUNT, selectedLottery } = useLotteryLocalState()
-  const { onUserInput, onLotterySelection } = useLotteryLocalActionHandlers()
+  const { AMOUNT, selectedLottery, remainTime } = useLotteryLocalState()
+  const { onUserInput, onLotterySelection, onRefreshRemainTime } = useLotteryLocalActionHandlers()
   const coinAddress = (account && chainId) ? LOTTERY_COIN_ADDRESS[chainId] : undefined;
   const lotteryFactoryAddress = (account && chainId) ? LOTTERY_FACTORY_ADDRESS[chainId] : undefined;
   const coinContract = useTokenContract(coinAddress, true)
@@ -210,10 +218,26 @@ export default function Lottery({ history }: RouteComponentProps) {
   const [approvalState, approveCallback] = useApproveCallback(lotteryDetail?.minAmount, selectedLottery)
   const [players, loadingPlayers] = useLotteryPlayerPage(playerCurPage, playerPageSize, lotteryContract)
 
+  const locale = useActiveLocale()
+  useInterval(() => {
+    if (lotteryDetail && lotteryDetail.stopTime) {
+      const rt = lotteryDetail?.stopTime - Date.now().valueOf() / 1000
+      if (rt >= 0) {
+        onRefreshRemainTime(rt)
+      }
+      else {
+        onRefreshRemainTime(0)
+      }
+    }
+    else {
+      onRefreshRemainTime(undefined)
+    }
+  }, 1000)
+
   const handleApprove = useCallback(async () => {
     approveCallback().catch((err) => {
-      const msg = (err?.result?.error?.message) ||  (err?.data?.message)
-      if(msg){
+      const msg = (err?.result?.error?.message) || (err?.data?.message)
+      if (msg) {
         Toast(msg)
       }
     })
@@ -237,8 +261,8 @@ export default function Lottery({ history }: RouteComponentProps) {
     let ok = true
     lotteryContract.participate(amount).catch((err) => {
       ok = false
-      const msg = (err?.result?.error?.message) ||  (err?.data?.message)
-      if(msg){
+      const msg = (err?.result?.error?.message) || (err?.data?.message)
+      if (msg) {
         Toast(msg)
       }
     }).finally(() => {
@@ -310,9 +334,46 @@ export default function Lottery({ history }: RouteComponentProps) {
       return ""
     }
     else {
-      return new Date(time * 1000).toLocaleString()
+      const dateFormat: Intl.DateTimeFormatOptions = {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        hourCycle: "h24"
+      }
+
+      return new Date(time * 1000).toLocaleString(locale, dateFormat)
     }
   }
+
+  const remainTimeStr = useMemo(() => {
+    if (remainTime !== undefined) {
+      if (remainTime <= 0 || lotteryDetail?.state === LotteryState.Finish) {
+        return t`Finished`
+      }
+      const day = Math.floor(remainTime / (3600 * 24));
+      const hour = Math.floor(remainTime % (3600 * 24) / 3600);
+      const min = Math.floor(remainTime % 3600 / 60);
+      const sec = Math.floor(remainTime % 60);
+      const dayDesc = day > 1 ? t`Days` : t`Day`
+      const hourDesc = hour > 1 ? t`Hours` : t`Hour`
+      const minDesc = min > 1 ? t`Minutes` : t`Minute`
+      const secDesc = day > 1 ? t`Seconds` : t`Second`
+      if (day > 0) {
+        return <>
+          <span>{day}</span> <span>{dayDesc}</span> <span>{hour}</span> <span>{hourDesc}</span>{locale === "en-US" ? <br /> : " "}<span>{min}</span> <span>{minDesc}</span>
+        </>
+      }
+      else if (hour > 0) {
+        return hour + " " + hourDesc + " " + min + " " + minDesc
+      }
+      else {
+        return min + " " + minDesc + " " + sec + " " + secDesc
+      }
+    }
+    return ""
+  }, [remainTime, lotteryDetail?.state])
 
   const dateDesc = (time: number | undefined) => {
     if (!time || time === 0) {
@@ -447,11 +508,11 @@ export default function Lottery({ history }: RouteComponentProps) {
             <FullRow>
               <DetailInfoCard flex="1" width="100%">
                 <TextTitle><Trans>Start Time</Trans></TextTitle>
-                <TextValue>{loadingLottery ? <LoadingDataView /> : dateDesc(lotteryDetail?.startTime)}</TextValue>
+                <TimeValue>{loadingLottery ? <LoadingDataView /> : dateTimeDesc(lotteryDetail?.startTime)}</TimeValue>
               </DetailInfoCard>
               <DetailInfoCard flex="1" width="100%">
-                <TextTitle><Trans>Stop Time</Trans></TextTitle>
-                <TextValue>{loadingLottery ? <LoadingDataView /> : dateDesc(lotteryDetail?.stopTime)}</TextValue>
+                <TextTitle><Trans>Remaining Time</Trans></TextTitle>
+                <TimeValue>{(loadingLottery || remainTime === undefined) ? <LoadingDataView /> : remainTimeStr}</TimeValue>
               </DetailInfoCard>
             </FullRow>
           </DetailInfoRow>
@@ -562,7 +623,7 @@ export default function Lottery({ history }: RouteComponentProps) {
           <RowBetween marginTop={2} marginBottom={3}>
             <RowFixed>
               <ThemedText.Main ml="6px" fontSize="10pt" color={theme.text1}>
-                <Trans>Players list:</Trans>
+                <Trans>Players list</Trans>:
               </ThemedText.Main>
             </RowFixed>
           </RowBetween>
