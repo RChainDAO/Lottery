@@ -27,6 +27,7 @@
     <link rel="preconnect" href="https://www.google-analytics.com/">
 
     <link rel="preload" href="%PUBLIC_URL%/fonts/Inter-roman.var.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="%PUBLIC_URL%/fonts/pingfang.ttf" as="font" type="font/ttf" crossorigin>
 
     <style>
         * {
@@ -47,10 +48,13 @@
                 url(%PUBLIC_URL%/fonts/Inter-roman.var.woff2) format("woff2-variations"),
                 url(%PUBLIC_URL%/fonts/Inter-roman.var.woff2) format("woff2");
         }
-
+        @font-face {
+            font-family: 'Ping Fang';
+            src: url(%PUBLIC_URL%/fonts/pingfang.ttf)
+        }
         @supports (font-variation-settings: normal) {
             * {
-                font-family: 'Inter custom', sans-serif;
+                font-family:  'Inter custom','Ping Fang';
             }
         }
 

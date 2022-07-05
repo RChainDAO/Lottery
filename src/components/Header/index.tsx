@@ -29,9 +29,9 @@ const HeaderFrame = styled.div<{ showBackground: boolean }>`
   top: 0;
   position: relative;
   padding-left: 2rem;
-  padding-top: 1rem;
+  padding-top: 0.5rem;
   padding-right: 2rem;
-  padding-bottom: 1rem;
+  padding-bottom: 0.5rem;
   z-index: 21;
   position: relative;
   /* Background slide effect on scroll. */
