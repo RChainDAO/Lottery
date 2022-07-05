@@ -81,16 +81,16 @@ const DetailInfoCard = styled(LightCard)`
   margin: 2px;
   padding: 10px;
 `
-const PoolAmountCard = styled(LightCard)`
-  margin: 2px;
-  padding: 10px;
+const PoolAmountCard = styled(DetailInfoCard)`
 `
 
 const TextTitle = styled(Text)`
   font-size: 10pt;
   text-align: center;
+  line-height: 14pt;
   ${({ theme }) => theme.mediaWidth.upToLarge`
     font-size: 2vw;
+    line-height: 3vw;
   `};
 `
 const TextValue = styled(Text)`
@@ -106,6 +106,9 @@ const TextValue = styled(Text)`
   ${({ theme }) => theme.mediaWidth.upToLarge`
     font-size: 2.5vw;
   `};
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+  padding: 5px;
+  `};
 `
 
 const TimeValue = styled(TextValue)`
@@ -113,24 +116,18 @@ const TimeValue = styled(TextValue)`
 `
 
 const TextTitleBigger = styled(TextTitle)`
-  font-size: 14pt;
-  text-align: center;
+  font-size: 11pt;
   font-weight: 700;
-  display: block;
-  vertical-align: middle;
   ${({ theme }) => theme.mediaWidth.upToLarge`
-    font-size: 3.1vw;
+    font-size: 2.2vw;
   `};
 `
-const TextValueBigger = styled(Text)`
+const TextValueBigger = styled(TextValue)`
   font-weight: 600;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   font-size: 12pt;
-  padding: 6px;
   ${({ theme }) => theme.mediaWidth.upToLarge`
     font-size: 3vw;
+    line-height: 3vw;
   `};
 `
 const TextValueLong = styled(TextValue)`
@@ -365,16 +362,16 @@ export default function Lottery({ history }: RouteComponentProps) {
       if (remainTime <= 0) {
         return t`Finished`
       }
-      else if(lotteryDetail?.state === LotteryState.Finish){
+      else if (lotteryDetail?.state === LotteryState.Finish) {
         return t`Finished`
       }
-      else if(lotteryDetail?.state === LotteryState.WaitLucyDraw){
+      else if (lotteryDetail?.state === LotteryState.WaitLucyDraw) {
         return t`Wait Luck Draw`
       }
-      else if(lotteryDetail?.state === LotteryState.WaitStart){
+      else if (lotteryDetail?.state === LotteryState.WaitStart) {
         return t`Pending`
       }
-      else if(lotteryDetail?.state === LotteryState.Pausing){
+      else if (lotteryDetail?.state === LotteryState.Pausing) {
         return t`Pausing`
       }
       const day = Math.floor(remainTime / (3600 * 24));
@@ -530,9 +527,9 @@ export default function Lottery({ history }: RouteComponentProps) {
               </DetailInfoCard>
               <DetailInfoCard flex="1">
                 <TextTitle><Trans>Player Count</Trans></TextTitle>
-                <TextValue>{loadingLottery ? <LoadingDataView /> : (lotteryDetail?.playerCount === undefined ? "" : CurrencyAmount.fromRawAmount(new Token(1, ZERO_ADDRESS, 1, "temp", "temp"), JSBI.BigInt(lotteryDetail?.playerCount?.toString()||"0")).toFixed(0, { groupSeparator: ',' }))  }</TextValue>
+                <TextValue>{loadingLottery ? <LoadingDataView /> : (lotteryDetail?.playerCount === undefined ? "" : CurrencyAmount.fromRawAmount(new Token(1, ZERO_ADDRESS, 1, "temp", "temp"), JSBI.BigInt(lotteryDetail?.playerCount?.toString() || "0")).toFixed(0, { groupSeparator: ',' }))}</TextValue>
               </DetailInfoCard>
-              <PoolAmountCard flex="1" style={{ backgroundColor: theme.darkMode ? "rgb(74,230,200)" : "rgb(74,230,200)", color: "rgb(200,84,213)", verticalAlign: "middle" }}>
+              <PoolAmountCard flex="1" style={{ backgroundColor: "#3ee4c4"}}>
                 <TextTitleBigger><Trans>Pool Amount</Trans></TextTitleBigger>
                 <TextValueBigger>{loadingLottery ? <LoadingDataView /> : currencyInfo(lotteryDetail?.prize)}</TextValueBigger>
               </PoolAmountCard>
