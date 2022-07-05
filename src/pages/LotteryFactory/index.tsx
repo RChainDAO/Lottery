@@ -241,7 +241,6 @@ export default function LotteryFactory({ history }: RouteComponentProps) {
 
   const handleTypeStartTime = useCallback(
     (value: string) => {
-      console.log(value)
       onUserInput(LotteryFactoryField.LOTTERY_STARTTIME, value)
     },
     [onUserInput]

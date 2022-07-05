@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-restricted-imports
 import { t, Trans } from '@lingui/macro'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 import useActiveWeb3React from 'hooks/useActiveWeb3React'
 import { useCallback, useContext, useMemo, useState } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
@@ -38,6 +38,7 @@ import { CardSection, DataCard } from 'components/earn/styled'
 import { shortenAddress } from 'utils'
 import useInterval from 'lib/hooks/useInterval'
 import { useActiveLocale } from 'hooks/useActiveLocale'
+import JSBI from 'jsbi'
 
 const WrapperCard = styled.div`
   display: flex;
@@ -89,52 +90,47 @@ const TextTitle = styled(Text)`
   font-size: 10pt;
   text-align: center;
   ${({ theme }) => theme.mediaWidth.upToLarge`
-    font-size: 2.2vw;
+    font-size: 2vw;
   `};
 `
 const TextValue = styled(Text)`
   flex: 1;
   text-align: center;
-  font-size: 18pt;
+  font-size: 12pt;
   min-height: 21px;
-  margin: 10px !important;
-  padding-top: 5px;
+  vertical-align: middle;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   ${({ theme }) => theme.mediaWidth.upToLarge`
-    font-size: 4vw;
-    margin: 4pt !important;
+    font-size: 2.5vw;
   `};
 `
 
 const TimeValue = styled(TextValue)`
-  min-height: 42px;
-  ${({ theme }) => theme.mediaWidth.upToLarge`
-  min-height: 8vw;
-  `};
+
 `
 
 const TextTitleBigger = styled(TextTitle)`
-  font-size: 17pt;
+  font-size: 14pt;
   text-align: center;
   font-weight: 700;
   display: block;
-  vertical-align: bottom;
+  vertical-align: middle;
   ${({ theme }) => theme.mediaWidth.upToLarge`
     font-size: 3.1vw;
   `};
 `
 const TextValueBigger = styled(Text)`
-  vertical-align: top;
   font-weight: 600;
-  display: block;
-  text-align: center;
-  font-size: 16pt;
-  min-height: 21px;
-  margin-top: 6px !important;
-  padding-bottom: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12pt;
+  padding: 6px;
   ${({ theme }) => theme.mediaWidth.upToLarge`
     font-size: 3vw;
-    margin-top: 0px !important;
-    padding-top: 6px;
   `};
 `
 const TextValueLong = styled(TextValue)`
@@ -156,7 +152,8 @@ const InlineText = styled(Text)`
 
 const TopSection = styled(AutoColumn)`
   width: 100%;
-  padding: 20px;
+  padding-left: 20px;
+  padding-right: 20px;
 `
 
 const InstructionCard = styled(DataCard)`
@@ -352,7 +349,7 @@ export default function Lottery({ history }: RouteComponentProps) {
     else {
       const dateFormat: Intl.DateTimeFormatOptions = {
         year: 'numeric',
-        month: 'short',
+        month: 'long',
         day: 'numeric',
         hour: 'numeric',
         minute: 'numeric',
@@ -365,8 +362,20 @@ export default function Lottery({ history }: RouteComponentProps) {
 
   const remainTimeStr = useMemo(() => {
     if (remainTime !== undefined) {
-      if (remainTime <= 0 || lotteryDetail?.state === LotteryState.Finish) {
+      if (remainTime <= 0) {
         return t`Finished`
+      }
+      else if(lotteryDetail?.state === LotteryState.Finish){
+        return t`Finished`
+      }
+      else if(lotteryDetail?.state === LotteryState.WaitLucyDraw){
+        return t`Wait Luck Draw`
+      }
+      else if(lotteryDetail?.state === LotteryState.WaitStart){
+        return t`Pending`
+      }
+      else if(lotteryDetail?.state === LotteryState.Pausing){
+        return t`Pausing`
       }
       const day = Math.floor(remainTime / (3600 * 24));
       const hour = Math.floor(remainTime % (3600 * 24) / 3600);
@@ -376,15 +385,7 @@ export default function Lottery({ history }: RouteComponentProps) {
       const hourDesc = hour > 1 ? t`Hours` : t`Hour`
       const minDesc = min > 1 ? t`Minutes` : t`Minute`
       const secDesc = day > 1 ? t`Seconds` : t`Second`
-      if (day > 0) {
-        return day + " " + dayDesc + " " + hour + " " + hourDesc
-      }
-      else if (hour > 0) {
-        return hour + " " + hourDesc + " " + min + " " + minDesc + " "
-      }
-      else {
-        return min + " " + minDesc + " " + sec + " " + secDesc
-      }
+      return day + " " + dayDesc + " " + hour + " " + hourDesc + " " + min + " " + minDesc
     }
     return ""
   }, [remainTime, lotteryDetail?.state, locale])
@@ -411,7 +412,6 @@ export default function Lottery({ history }: RouteComponentProps) {
     onLotterySelection(a.lotteryAddress ?? "")
     setShowLotteryList(false)
   }, [onUserInput, onLotterySelection, setShowLotteryList])
-
   return (
     <>
       <TopSection gap="md">
@@ -461,7 +461,7 @@ export default function Lottery({ history }: RouteComponentProps) {
       <WrapperCard>
         <BodySectionCard height="auto">
           <RowBetween style={{ cursor: "pointer", padding: "5px" }} onClick={handleShowLotteryList}>
-            <InlineText fontWeight={500} fontSize={20} marginLeft={'12px'}>
+            <InlineText fontWeight={500} fontSize={16} marginLeft={'12px'}>
               {
                 (lotteryCount === 0 && <Trans>No Lottery Exist</Trans>)
                 ||
@@ -530,7 +530,7 @@ export default function Lottery({ history }: RouteComponentProps) {
               </DetailInfoCard>
               <DetailInfoCard flex="1">
                 <TextTitle><Trans>Player Count</Trans></TextTitle>
-                <TextValue>{loadingLottery ? <LoadingDataView /> : lotteryDetail?.playerCount}</TextValue>
+                <TextValue>{loadingLottery ? <LoadingDataView /> : (lotteryDetail?.playerCount === undefined ? "" : CurrencyAmount.fromRawAmount(new Token(1, ZERO_ADDRESS, 1, "temp", "temp"), JSBI.BigInt(lotteryDetail?.playerCount?.toString()||"0")).toFixed(0, { groupSeparator: ',' }))  }</TextValue>
               </DetailInfoCard>
               <PoolAmountCard flex="1" style={{ backgroundColor: theme.darkMode ? "rgb(74,230,200)" : "rgb(74,230,200)", color: "rgb(200,84,213)", verticalAlign: "middle" }}>
                 <TextTitleBigger><Trans>Pool Amount</Trans></TextTitleBigger>
@@ -579,7 +579,7 @@ export default function Lottery({ history }: RouteComponentProps) {
             <>
               <RowBetween marginTop={50}>
                 <FullRow>
-                  <ThemedText.Main ml="6px" fontSize="12pt" color={theme.text1} width="100%" textAlign="center">
+                  <ThemedText.Main fontSize="12pt" color={theme.text1} width="100%" textAlign="center">
                     <Trans>Please approve firstly</Trans>
                   </ThemedText.Main>
                 </FullRow>
@@ -660,7 +660,7 @@ export default function Lottery({ history }: RouteComponentProps) {
           <RowBetween marginTop={2} marginBottom={3}>
             <RowFixed>
               <TextWrapper>
-                <Trans>Lottery list:</Trans>
+                <Trans>Lotteries list</Trans>:
               </TextWrapper>
             </RowFixed>
           </RowBetween>
@@ -676,7 +676,7 @@ export default function Lottery({ history }: RouteComponentProps) {
                         </span>
                       </ThemedText.Main>
                       <ThemedText.Main ml="6px" fontSize="12px" color={theme.text1}>
-                        <span>{!(a.createTime && a.createTime > 0) ? "" : new Date(a.createTime * 1000).toLocaleString()}</span>
+                        <span>{dateTimeDesc(a.createTime)}</span>
                       </ThemedText.Main>
                     </FullRow>
                   </RowBetween>

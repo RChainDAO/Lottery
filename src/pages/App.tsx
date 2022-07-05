@@ -31,15 +31,18 @@ const BodyWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  padding: 100px 16px 0px 16px;
+  padding: 110px 16px 0px 16px;
   align-items: center;
   flex: 1;
   z-index: 1;
-
   ${({ theme }) => theme.mediaWidth.upToMedium`
-  padding: 100px 16px 0px 16px;
+      padding: 90px 16px 0px 16px;
   `};
+
   ${({ theme }) => theme.mediaWidth.upToSmall`
+    padding: 4.8rem 8px 16px 8px;
+  `};
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
     padding: 4rem 8px 16px 8px;
   `};
 `
