@@ -230,8 +230,8 @@ export const ButtonText = styled(BaseButton)`
 export const ButtonTheme = styled.div`
     background: url(${({ theme }) => (theme.darkMode ? themeDark : themeLight)});
     cursor: pointer;
-    width: 34px;
-    height: 34px;
+    width: 30px;
+    height: 30px;
     background-size: cover;
 `
 
