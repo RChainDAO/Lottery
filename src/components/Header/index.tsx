@@ -30,7 +30,7 @@ const HeaderFrame = styled.div<{ showBackground: boolean }>`
   position: relative;
   padding-left: 2rem;
   padding-top: 1rem;
-  padding-right: 3rem;
+  padding-right: 2rem;
   padding-bottom: 1rem;
   z-index: 21;
   position: relative;
@@ -42,11 +42,10 @@ const HeaderFrame = styled.div<{ showBackground: boolean }>`
   transition: background-position 0.1s, box-shadow 0.1s;
   background-blend-mode: hard-light;
 
-  ${({ theme }) => theme.mediaWidth.upToLarge`
-    grid-template-columns: 200px 1fr;
-  `};
-
   ${({ theme }) => theme.mediaWidth.upToMedium`
+    grid-template-columns: 20vw 1fr ;
+  `};
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
     grid-template-columns: 20vw 1fr ;
   `};
 `
@@ -121,12 +120,13 @@ const RdaoLogo = styled.div`
   }
   width: 200px;
   position: relative;
-  ${({ theme }) => theme.mediaWidth.upToLarge`
-    width: 200px;
-  `};
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     width: 20vw;
+  `};
+  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
+    width: 25vw;
+    margin-left: -10px
   `};
 `
 
