@@ -1,6 +1,7 @@
 import { Trans } from '@lingui/macro'
+import { LightCard } from 'components/Card'
 import { AutoColumn } from 'components/Column'
-import Row from 'components/Row'
+import Row, { AutoRow } from 'components/Row'
 import { useCallback, useEffect, useState } from 'react'
 import { ArrowLeft } from 'react-feather'
 import ReactGA from 'react-ga4'
@@ -16,7 +17,7 @@ import { SUPPORTED_WALLETS } from '../../constants/wallet'
 import usePrevious from '../../hooks/usePrevious'
 import { useModalOpen, useWalletModalToggle } from '../../state/application/hooks'
 import { ApplicationModal } from '../../state/application/reducer'
-import { ThemedText } from '../../theme'
+import { ExternalLink, ThemedText } from '../../theme'
 import { isMobile } from '../../utils/userAgent'
 import AccountDetails from '../AccountDetails'
 import Modal from '../Modal'
@@ -384,6 +385,22 @@ export default function WalletModal({
               />
             )}
             {walletView !== WALLET_VIEWS.PENDING && <OptionGrid>{getOptions()}</OptionGrid>}
+            {!pendingError && (
+              <LightCard>
+                <AutoRow style={{ flexWrap: 'nowrap' }}>
+                  <ThemedText.Body fontSize={12}>
+                    <Trans>
+                      By connecting a wallet, you agree to RChain DAO’{' '}
+                      <ExternalLink
+                        style={{ textDecoration: 'underline' }}
+                        href="https://rchaindao.com/terms_of_service/"
+                      >Terms of Service
+                      </ExternalLink>{' '}and acknowledge that you have read and understand the RChain DAO Protocol Disclaimer.
+                    </Trans>
+                  </ThemedText.Body>
+                </AutoRow>
+              </LightCard>
+            )}
           </AutoColumn>
         </ContentWrapper>
       </UpperSection>

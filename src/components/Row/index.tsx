@@ -46,5 +46,15 @@ export const FullRow = styled(Row)<{ gap?: string; justify?: string }>`
   width: 100%;
   display: flex;
   margin: ${({ gap }) => gap && `-${gap}`};
+  justify-content: ${({ justify }) => justify && justify};
 `
+
+export const StretchRow = styled(Row)<{ gap?: string; justify?: string }>`
+  align-items: stretch;
+  margin: ${({ gap }) => gap && `-${gap}`};
+  justify-content: ${({ justify }) => justify && justify};
+`
+
+
+
 export default Row

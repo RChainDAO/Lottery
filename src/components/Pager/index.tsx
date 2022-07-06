@@ -33,22 +33,22 @@ const ButtonGrayNumber = styled(ButtonGray)`
     width: 26px;
     height: 26px;
     font-size: 10pt;
-    padding: 12px;
+    padding: 0px;
 `
 
 const ButtonEllipsis = styled(ButtonGray)`
     width: 26px;
     height: 26px;
     font-size: 10pt;
-    padding: 12px;
     background-color: transparent;
+    padding: 0px;
 `
 
 const ButtonOutlinedNumber = styled(ButtonOutlined)`
 width: 26px;
 height: 26px;
 font-size: 8pt;
-padding: 10px;
+padding: 0px;
 `
 
 const ButtonLightArrow = styled(ButtonOutlined)`
@@ -236,7 +236,7 @@ export default function CustomPage({
                             <RowFixed key={idx.valueOf()}>
                                 <PageLabel>
                                     {
-                                        i === 0 ? <ButtonEllipsis mr="0px">...</ButtonEllipsis>
+                                        i === 0 ? <ButtonEllipsis mr={2}>...</ButtonEllipsis>
                                             : (
                                                 page == i ?
                                                     <ButtonGrayNumber mr="0px">{i}</ButtonGrayNumber>
