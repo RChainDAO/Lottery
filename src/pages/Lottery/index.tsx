@@ -418,7 +418,6 @@ export default function Lottery({ history }: RouteComponentProps) {
     onLotterySelection(a.lotteryAddress ?? "")
     setShowLotteryList(false)
   }, [onUserInput, onLotterySelection, setShowLotteryList])
-  console.log("selectedLottery", selectedLottery, account)
   return (
     <>
       <TopSection gap="md">
