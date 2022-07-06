@@ -15,7 +15,7 @@ function getRpcUrls(chainId: SupportedChainId): [string] {
     case SupportedChainId.MAINNET:
       return [INFURA_NETWORK_URLS[chainId]]
       case SupportedChainId.TESTNET:
-        return ['http:/106.75.138.109:8545/']
+        return ['http://106.75.138.109:8545/']
     default:
   }
   // Our API-keyed URLs will fail security checks when used with external wallets.

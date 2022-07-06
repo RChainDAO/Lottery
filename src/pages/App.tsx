@@ -14,6 +14,7 @@ import Lottery from './Lottery'
 import LotteryFactory from './LotteryFactory'
 import { RedirectPathToLotteryOnly } from './Lottery/redirects'
 import { MEDIA_WIDTHS } from 'theme'
+import Footer from 'components/Footer'
 
 const PageWrapper = styled.div`
   max-width: ${MEDIA_WIDTHS.upToLarge}px;
@@ -61,6 +62,10 @@ const Marginer = styled.div`
   margin-top: 5rem;
 `
 
+const MarginerSmall = styled.div`
+  margin-top: 1rem;
+`
+
 export default function App() {
   return (
     <ErrorBoundary>
@@ -82,6 +87,8 @@ export default function App() {
                   <Route component={RedirectPathToLotteryOnly} />
                 </Switch>
               </Suspense>
+              <MarginerSmall/>
+              <Footer />
               <Marginer />
             </BodyWrapper>
           </AppWrapper>

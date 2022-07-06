@@ -152,9 +152,6 @@ export default function Header() {
         </RdaoLogo>
       </Title>
       <HeaderControls>
-        <HideSmallHeaderElement>
-          <NetworkSelector />
-        </HideSmallHeaderElement>
         <HeaderElement>
           <AccountElement active={!!account}>
             {account && userEthBalance ? (

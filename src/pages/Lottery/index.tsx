@@ -19,7 +19,7 @@ import AppBody from '../AppBody'
 import { useTokenContract, useLotteryContract, useLotteryFactoryContract } from 'hooks/useContract'
 import { LOTTERY_COIN_ADDRESS, LOTTERY_FACTORY_ADDRESS } from 'constants/addresses'
 import { LightGreyCard } from 'components/Card'
-import { RowBetween, RowFixed, FullRow } from 'components/Row'
+import { RowBetween, RowFixed, FullRow, StretchRow } from 'components/Row'
 import { useCurrencyBalance } from 'state/wallet/hooks'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
 import { useUserLotteryInfo, useLotteryDetailInfo, LotteryState, useLotteryLocalState, useLotteryLocalActionHandlers, useLotteryPlayerPage } from 'state/lottery/hooks'
@@ -57,11 +57,23 @@ const BodySectionCard = styled(LightGreyCard)`
   padding: 8px 12px;
   margin-top: 4px;
   margin-bottom: 4px;
-  margin-left: 20px;
-  margin-right: 20px;
+`
+
+const BodySectionCardLeft = styled(BodySectionCard)`
+  flex: 3;
+  padding: 8px 12px;
+  margin-top: 4px;
+  margin-bottom: 4px;
+  margin-right: 10px;
+  ${({ theme }) => theme.mediaWidth.upToLarge`
+    margin-right: 0px;
+  `};
+`
+
+const BodySectionCardRight = styled(BodySectionCard)`
+  margin-left: 10px;
   ${({ theme }) => theme.mediaWidth.upToLarge`
     margin-left: 0px;
-    margin-right: 0px;
   `};
 `
 
@@ -70,7 +82,7 @@ const ModalCard = styled(LightGreyCard)`
   padding: 8px 12px;
 `
 
-const DetailInfoRow = styled(RowBetween)`
+const DetailInfoRow = styled(StretchRow)`
   margin-top: 4px;
   margin-bottom: 4px;  
 `
@@ -87,27 +99,24 @@ const PoolAmountCard = styled(DetailInfoCard)`
 const TextTitle = styled(Text)`
   font-size: 10pt;
   text-align: center;
-  line-height: 14pt;
-  ${({ theme }) => theme.mediaWidth.upToLarge`
+  ${({ theme }) => theme.mediaWidth.upToMedium`
     font-size: 2vw;
-    line-height: 3vw;
   `};
 `
 const TextValue = styled(Text)`
   flex: 1;
   text-align: center;
   font-size: 12pt;
-  min-height: 21px;
   vertical-align: middle;
   padding: 10px;
   display: flex;
   justify-content: center;
   align-items: center;
-  ${({ theme }) => theme.mediaWidth.upToLarge`
+  ${({ theme }) => theme.mediaWidth.upToMedium`
     font-size: 2.5vw;
   `};
   ${({ theme }) => theme.mediaWidth.upToSmall`
-  padding: 5px;
+    padding: 5px;
   `};
 `
 
@@ -118,16 +127,15 @@ const TimeValue = styled(TextValue)`
 const TextTitleBigger = styled(TextTitle)`
   font-size: 11pt;
   font-weight: 700;
-  ${({ theme }) => theme.mediaWidth.upToLarge`
+  ${({ theme }) => theme.mediaWidth.upToMedium`
     font-size: 2.2vw;
   `};
 `
 const TextValueBigger = styled(TextValue)`
   font-weight: 600;
   font-size: 12pt;
-  ${({ theme }) => theme.mediaWidth.upToLarge`
+  ${({ theme }) => theme.mediaWidth.upToMedium`
     font-size: 3vw;
-    line-height: 3vw;
   `};
 `
 const TextValueLong = styled(TextValue)`
@@ -149,8 +157,6 @@ const InlineText = styled(Text)`
 
 const TopSection = styled(AutoColumn)`
   width: 100%;
-  padding-left: 20px;
-  padding-right: 20px;
 `
 
 const InstructionCard = styled(DataCard)`
@@ -212,7 +218,10 @@ export default function Lottery({ history }: RouteComponentProps) {
   const lotteryCount = useLotteryCount(lotteryFactoryContract)
   const lotterises = useLotteryPage(lotteryCurPage, lotteryPageSize, lotteryFactoryContract)
   const lastActiveLottery = useLastActiveLottery(lotteryFactoryContract)
-  if (lastActiveLottery && !selectedLottery) {
+  if (!account && !!selectedLottery) {
+    onLotterySelection(undefined)
+  }
+  else if (lastActiveLottery && !selectedLottery) {
     onLotterySelection(lastActiveLottery)
   }
   const lotteryContract = useLotteryContract(selectedLottery, true)
@@ -409,6 +418,7 @@ export default function Lottery({ history }: RouteComponentProps) {
     onLotterySelection(a.lotteryAddress ?? "")
     setShowLotteryList(false)
   }, [onUserInput, onLotterySelection, setShowLotteryList])
+  console.log("selectedLottery", selectedLottery, account)
   return (
     <>
       <TopSection gap="md">
@@ -436,7 +446,7 @@ export default function Lottery({ history }: RouteComponentProps) {
                 </ThemedText.White>
               </RowBetween>
               <RowBetween>
-                <ThemedText.Yellow>
+                <ThemedText.Yellow fontWeight={locale === "zh-CN" ? 600: 500}>
                   <Trans>*Lottery pools are run on the blockchain. Our game code is fully open source. Final interpretation is at the organizer&apos;s discretion.</Trans>
                 </ThemedText.Yellow>
               </RowBetween>
@@ -460,7 +470,7 @@ export default function Lottery({ history }: RouteComponentProps) {
           <RowBetween style={{ cursor: "pointer", padding: "5px" }} onClick={handleShowLotteryList}>
             <InlineText fontWeight={500} fontSize={16} marginLeft={'12px'}>
               {
-                (lotteryCount === 0 && <Trans>No Lottery Exist</Trans>)
+                (!lotteryCount && <Trans>No Lottery Exist</Trans>)
                 ||
                 ((!selectedLottery || selectedLottery.length === 0) && <Trans>Select A Lottery Contract</Trans>)
                 ||
@@ -486,84 +496,74 @@ export default function Lottery({ history }: RouteComponentProps) {
         </BodySectionCard>
       </WrapperCard>
       <WrapperCard>
-        <BodySectionCard height="auto">
+        <BodySectionCardLeft height="auto">
           <DetailInfoRow>
-            <FullRow>
-              <DetailInfoCard>
-                <TextTitle><Trans>State</Trans></TextTitle>
-                <TextValue>{
-                  (loadingLottery && <LoadingDataView />)
-                  ||
-                  ((lotteryDetail?.state === LotteryState.Running) && <Trans>Running</Trans>)
-                  ||
-                  ((lotteryDetail?.state === LotteryState.Finish) && <Trans>Finished</Trans>)
-                  ||
-                  ((lotteryDetail?.state === LotteryState.WaitLucyDraw) && <Trans>Wait Luck Draw</Trans>)
-                  ||
-                  ((lotteryDetail?.state === LotteryState.WaitStart) && <Trans>Pending</Trans>)
-                  ||
-                  ((lotteryDetail?.state === LotteryState.Pausing) && <Trans>Pausing</Trans>)
-                }</TextValue>
-              </DetailInfoCard>
-            </FullRow>
+            <DetailInfoCard>
+              <TextTitle><Trans>State</Trans></TextTitle>
+              <TextValue>{
+                (loadingLottery && <LoadingDataView />)
+                ||
+                ((lotteryDetail?.state === LotteryState.Running) && <Trans>Running</Trans>)
+                ||
+                ((lotteryDetail?.state === LotteryState.Finish) && <Trans>Finished</Trans>)
+                ||
+                ((lotteryDetail?.state === LotteryState.WaitLucyDraw) && <Trans>Wait Luck Draw</Trans>)
+                ||
+                ((lotteryDetail?.state === LotteryState.WaitStart) && <Trans>Pending</Trans>)
+                ||
+                ((lotteryDetail?.state === LotteryState.Pausing) && <Trans>Pausing</Trans>)
+              }</TextValue>
+            </DetailInfoCard>
           </DetailInfoRow>
           <DetailInfoRow>
-            <FullRow>
-              <DetailInfoCard flex="1" width="100%">
-                <TextTitle><Trans>Start Time</Trans></TextTitle>
-                <TimeValue>{loadingLottery ? <LoadingDataView /> : dateTimeDesc(lotteryDetail?.startTime)}</TimeValue>
-              </DetailInfoCard>
-              <DetailInfoCard flex="1" width="100%">
-                <TextTitle><Trans>Remaining Time</Trans></TextTitle>
-                <TimeValue>{(loadingLottery) ? <LoadingDataView /> : remainTimeStr}</TimeValue>
-              </DetailInfoCard>
-            </FullRow>
+            <DetailInfoCard flex="1" width="100%">
+              <TextTitle><Trans>Start Time</Trans></TextTitle>
+              <TimeValue>{loadingLottery ? <LoadingDataView /> : dateTimeDesc(lotteryDetail?.startTime)}</TimeValue>
+            </DetailInfoCard>
+            <DetailInfoCard flex="1" width="100%">
+              <TextTitle><Trans>Remaining Time</Trans></TextTitle>
+              <TimeValue>{(loadingLottery) ? <LoadingDataView /> : remainTimeStr}</TimeValue>
+            </DetailInfoCard>
           </DetailInfoRow>
           <DetailInfoRow>
-            <FullRow>
-              <DetailInfoCard flex="1">
-                <TextTitle><Trans>Min Amount</Trans></TextTitle>
-                <TextValue>{loadingLottery ? <LoadingDataView /> : currencyInfo(lotteryDetail?.minAmount)}</TextValue>
-              </DetailInfoCard>
-              <DetailInfoCard flex="1">
-                <TextTitle><Trans>Player Count</Trans></TextTitle>
-                <TextValue>{loadingLottery ? <LoadingDataView /> : (lotteryDetail?.playerCount === undefined ? "" : CurrencyAmount.fromRawAmount(new Token(1, ZERO_ADDRESS, 1, "temp", "temp"), JSBI.BigInt(lotteryDetail?.playerCount?.toString() || "0")).toFixed(0, { groupSeparator: ',' }))}</TextValue>
-              </DetailInfoCard>
-              <PoolAmountCard flex="1" style={{ backgroundColor: "#3ee4c4"}}>
-                <TextTitleBigger><Trans>Pool Amount</Trans></TextTitleBigger>
-                <TextValueBigger>{loadingLottery ? <LoadingDataView /> : currencyInfo(lotteryDetail?.prize)}</TextValueBigger>
-              </PoolAmountCard>
-            </FullRow>
+            <DetailInfoCard flex="1">
+              <TextTitle><Trans>Min Amount</Trans></TextTitle>
+              <TextValue>{loadingLottery ? <LoadingDataView /> : currencyInfo(lotteryDetail?.minAmount)}</TextValue>
+            </DetailInfoCard>
+            <DetailInfoCard flex="1">
+              <TextTitle><Trans>Player Count</Trans></TextTitle>
+              <TextValue>{loadingLottery ? <LoadingDataView /> : (lotteryDetail?.playerCount === undefined ? "" : CurrencyAmount.fromRawAmount(new Token(1, ZERO_ADDRESS, 1, "temp", "temp"), JSBI.BigInt(lotteryDetail?.playerCount?.toString() || "0")).toFixed(0, { groupSeparator: ',' }))}</TextValue>
+            </DetailInfoCard>
+            <PoolAmountCard flex="1" style={{ backgroundColor: "#3ee4c4" }}>
+              <TextTitleBigger><Trans>Pool Amount</Trans></TextTitleBigger>
+              <TextValueBigger>{loadingLottery ? <LoadingDataView /> : currencyInfo(lotteryDetail?.prize)}</TextValueBigger>
+            </PoolAmountCard>
           </DetailInfoRow>
           {
             entryTime > 0 && (
               <DetailInfoRow>
-                <FullRow>
-                  <DetailInfoCard>
-                    <TextTitle><Trans>My Deposited</Trans></TextTitle>
-                    <TextValue>{loadingLottery ? <LoadingDataView /> : currencyInfo(depositedAmount)}</TextValue>
-                  </DetailInfoCard>
-                </FullRow>
+                <DetailInfoCard>
+                  <TextTitle><Trans>My Deposited</Trans></TextTitle>
+                  <TextValue>{loadingLottery ? <LoadingDataView /> : currencyInfo(depositedAmount)}</TextValue>
+                </DetailInfoCard>
               </DetailInfoRow>
             )
           }
           {
             lotteryDetail?.state === LotteryState.Finish && <DetailInfoRow>
-              <FullRow>
-                <DetailInfoCard>
-                  <TextTitle><Trans>Winner</Trans></TextTitle>
-                  <TextValueLong>{
-                    (loadingLottery && <LoadingDataView />)
-                    ||
-                    ((lotteryDetail?.winner && lotteryDetail.winner !== ZERO_ADDRESS) && <span style={{ color: "rgb(200,84,213)", fontWeight: 700 }}>{lotteryDetail?.winner}</span>)
-                    ||
-                    ((lotteryDetail?.state && lotteryDetail?.state === LotteryState.Finish) && <Trans>No Winner</Trans>)
-                    ||
-                    <Trans>Not yet drawn</Trans>
-                  }
-                  </TextValueLong>
-                </DetailInfoCard>
-              </FullRow>
+              <DetailInfoCard>
+                <TextTitle><Trans>Winner</Trans></TextTitle>
+                <TextValueLong>{
+                  (loadingLottery && <LoadingDataView />)
+                  ||
+                  ((lotteryDetail?.winner && lotteryDetail.winner !== ZERO_ADDRESS) && <span style={{ fontWeight: 700 }}>{lotteryDetail?.winner}</span>)
+                  ||
+                  ((lotteryDetail?.state && lotteryDetail?.state === LotteryState.Finish) && <Trans>No Winner</Trans>)
+                  ||
+                  <Trans>Not yet drawn</Trans>
+                }
+                </TextValueLong>
+              </DetailInfoCard>
             </DetailInfoRow>
           }
           {showConnectAWallet && (
@@ -621,8 +621,8 @@ export default function Lottery({ history }: RouteComponentProps) {
               </>
             )
           }
-        </BodySectionCard>
-        <BodySectionCard display="flex" flexDirection="column">
+        </BodySectionCardLeft>
+        <BodySectionCardRight display="flex" flexDirection="column">
           <RowBetween marginTop={2} marginBottom={3}>
             <RowFixed>
               <ThemedText.Main ml="6px" fontSize="10pt" color={theme.text1}>
@@ -650,7 +650,7 @@ export default function Lottery({ history }: RouteComponentProps) {
             })}
           </RowBetween>
           <CustomPage marginTop={2} mutipleRow={false} onChangePage={handleChangePage} onChangePageSize={handleChangePlayerPageSize} page={playerCurPage} size={playerPageSize} total={lotteryDetail?.playerCount} showJump={true} showEnds={true} showTotal={true} ></CustomPage>
-        </BodySectionCard>
+        </BodySectionCardRight>
       </WrapperCard>
       <Modal isOpen={showLotteryList} onDismiss={onLotteryListDismiss} minHeight={20}>
         <ModalCard display="flex" flexDirection="column">

@@ -74,6 +74,11 @@ const FormRow = styled(RowBetween)`
   justify-content: left;
 `
 
+const MarginerSmall = styled.div`
+  margin-top: 1rem;
+`
+
+
 export default function LotteryFactory({ history }: RouteComponentProps) {
   const theme = useContext(ThemeContext)
   const [lotteryPageSize, setLotteryPageSize] = useState(10)
@@ -480,6 +485,7 @@ export default function LotteryFactory({ history }: RouteComponentProps) {
           </RowBetween>
         </ContentWrapper>
       </Modal>
+      <MarginerSmall />
       <SwitchLocaleLink />
     </>
   )

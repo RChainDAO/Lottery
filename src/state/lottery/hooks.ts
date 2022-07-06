@@ -44,7 +44,7 @@ export function useLotteryLocalState(): AppState['lottery'] {
 
 export function useLotteryLocalActionHandlers(): {
     onUserInput: (field: LotteryField, typedValue: string) => void,
-    onLotterySelection: (lotteryAddress: string) => void,
+    onLotterySelection: (lotteryAddress: string|undefined) => void,
     onRefreshRemainTime: (remainTime: number|undefined) => void,
 } {
     const dispatch = useAppDispatch()
@@ -57,7 +57,7 @@ export function useLotteryLocalActionHandlers(): {
     )
 
     const onLotterySelection = useCallback(
-        (lotteryAddress: string) => {
+        (lotteryAddress: string|undefined) => {
             dispatch(
                 selectLottery({
                     lotteryAddress
