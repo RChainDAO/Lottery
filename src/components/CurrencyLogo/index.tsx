@@ -1,4 +1,5 @@
 import { Currency } from '@uniswap/sdk-core'
+import { LOTTERY_COIN_ADDRESS } from 'constants/addresses'
 import useCurrencyLogoURIs from 'lib/hooks/useCurrencyLogoURIs'
 import React from 'react'
 import styled from 'styled-components/macro'
@@ -18,21 +19,23 @@ const StyledLogo = styled(Logo)<{ size: string; native: string }>`
 
 export default function CurrencyLogo({
   currency,
+  logoURIs = null,
   size = '24px',
   style,
   ...rest
 }: {
   currency?: Currency | null
+  logoURIs?: string[] | null
   size?: string
   style?: React.CSSProperties
 }) {
-  const logoURIs = useCurrencyLogoURIs(currency)
+  const logoURIsRemote = useCurrencyLogoURIs(currency)
 
   return (
     <StyledLogo
       size={size}
       native={currency?.isNative ? "1" : "0"}
-      srcs={logoURIs}
+      srcs={(logoURIs || logoURIsRemote)}
       alt={`${currency?.symbol ?? 'token'} logo`}
       style={style}
       {...rest}

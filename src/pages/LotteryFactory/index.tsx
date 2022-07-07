@@ -303,6 +303,7 @@ export default function LotteryFactory({ history }: RouteComponentProps) {
                           hideInput={false}
                           value={MIN_AMOUNT.typedValue}
                           showMaxButton={true}
+                          logoURIs={[`https://raw.githubusercontent.com/rchaindao/publicity/main/assets/RDAO_Circle_64.png`]}
                           currency={coinToken}
                           onUserInput={handleTypeMinAmount}
                           fiatValue={undefined}

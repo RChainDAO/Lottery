@@ -228,7 +228,7 @@ export default function Lottery({ history }: RouteComponentProps) {
   const coinToken = useToken(coinAddress) || undefined
   const [lotteryDetail, loadingLottery] = useLotteryDetailInfo(lotteryContract, coinToken)
   const [depositedAmount, entryTime] = useUserLotteryInfo(account, lotteryContract, coinToken)
-  const [approvalState, approveCallback] = useApproveCallback(lotteryDetail?.minAmount, selectedLottery)
+  const [approvalState, approveCallback] = useApproveCallback(lotteryDetail?.minAmount, lotteryFactoryAddress)
   const [players, loadingPlayers] = useLotteryPlayerPage(playerCurPage, playerPageSize, lotteryContract)
 
   const locale = useActiveLocale()
@@ -418,6 +418,18 @@ export default function Lottery({ history }: RouteComponentProps) {
     onLotterySelection(a.lotteryAddress ?? "")
     setShowLotteryList(false)
   }, [onUserInput, onLotterySelection, setShowLotteryList])
+
+  const formatNum = useCallback((num:number):string=>{
+    const m = num.toString();
+    const len = m.length;
+    if (len <= 3) return m;
+    const n = len % 3;
+    if (n > 0) {
+        return m.slice(0,n)+","+m.slice(n,len)?.match(/\d{3}/g)?.join(",")
+    } else {
+        return m.slice(n,len)?.match(/\d{3}/g)?.join(",")||m
+    }
+  },[])
   return (
     <>
       <TopSection gap="md">
@@ -531,7 +543,7 @@ export default function Lottery({ history }: RouteComponentProps) {
             </DetailInfoCard>
             <DetailInfoCard flex="1">
               <TextTitle><Trans>Player Count</Trans></TextTitle>
-              <TextValue>{loadingLottery ? <LoadingDataView /> : (lotteryDetail?.playerCount === undefined ? "" : CurrencyAmount.fromRawAmount(new Token(1, ZERO_ADDRESS, 1, "temp", "temp"), JSBI.BigInt(lotteryDetail?.playerCount?.toString() || "0")).toFixed(0, { groupSeparator: ',' }))}</TextValue>
+              <TextValue>{loadingLottery ? <LoadingDataView /> : (lotteryDetail?.playerCount === undefined ? "" : formatNum(lotteryDetail.playerCount))}</TextValue>
             </DetailInfoCard>
             <PoolAmountCard flex="1" style={{ backgroundColor: "#3ee4c4" }}>
               <TextTitleBigger><Trans>Pool Amount</Trans></TextTitleBigger>
@@ -599,6 +611,7 @@ export default function Lottery({ history }: RouteComponentProps) {
                           hideInput={false}
                           value={AMOUNT.typedValue}
                           showMaxButton={true}
+                          logoURIs={[`https://raw.githubusercontent.com/rchaindao/publicity/main/assets/RDAO_Circle_64.png`]}
                           currency={currencies[LotteryField.AMOUNT]}
                           onUserInput={handleTypeInput}
                           onMax={handleMaxInput}
@@ -614,7 +627,7 @@ export default function Lottery({ history }: RouteComponentProps) {
                 </AppBody>
                 <ButtonPrimary disabled={!account || approvalState !== ApprovalState.APPROVED || lotteryDetail?.state !== LotteryState.Running} marginTop={30} onClick={handleParticipate}>
                   <ThemedText.Label mb="4px">
-                    <span>{depositedAmount?.greaterThan(0) ? "Add" : ""} Deposit</span>
+                    {depositedAmount?.greaterThan(0) ? <Trans>Add Deposit</Trans> : <Trans>Deposit</Trans>}
                   </ThemedText.Label>
                 </ButtonPrimary>
               </>
