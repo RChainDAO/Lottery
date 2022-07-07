@@ -487,7 +487,7 @@ export default function LotteryFactory({ history }: RouteComponentProps) {
         </ContentWrapper>
       </Modal>
       <MarginerSmall />
-      <SwitchLocaleLink />
+      <SwitchLocaleLink color={theme.darkMode ? "#fff" : "#000"} />
     </>
   )
 }
