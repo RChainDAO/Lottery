@@ -581,3 +581,15 @@ msgstr "从{total} 中显示{fromItemIdx} - {toItemIdx}"
 #: src/components/WalletModal/index.tsx
 msgid "By connecting a wallet, you agree to RChain DAO’ <0>Terms of Service</0> and acknowledge that you have read and understand the RChain DAO Protocol Disclaimer."
 msgstr "通过连接钱包，您同意 RChain DAO 的 <0>服务条款</0>，并承认您已经阅读并理解 RChain DAO 的协议免责声明。"
+
+#: src/pages/Lottery/index.tsx
+msgid "Add Deposit"
+msgstr "添加质押"
+
+#: src/pages/Lottery/index.tsx
+msgid "Deposit"
+msgstr "质押"
+
+#: src/components/Footer/index.tsx
+msgid "Terms of Service"
+msgstr "服务条款"

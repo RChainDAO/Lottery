@@ -172,6 +172,7 @@ interface CurrencyInputPanelProps {
   renderBalance?: (amount: CurrencyAmount<Currency>) => ReactNode
   locked?: boolean
   loading?: boolean
+  logoURIs?: string[] | null
 }
 
 export default function CurrencyInputPanel({
@@ -193,6 +194,7 @@ export default function CurrencyInputPanel({
   hideInput = false,
   locked = false,
   loading = false,
+  logoURIs = null,
   ...rest
 }: CurrencyInputPanelProps) {
   //const [modalOpen, setModalOpen] = useState(false)
@@ -227,7 +229,7 @@ export default function CurrencyInputPanel({
             <Aligner>
               <RowFixed>
                 {currency ? (
-                  <CurrencyLogo style={{ marginRight: '0.5rem' }} currency={currency} size={'24px'} />
+                  <CurrencyLogo logoURIs={logoURIs} style={{ marginRight: '0.5rem' }} currency={currency} size={'24px'} />
                 ) : null}
                 {(
                   <StyledTokenName className="token-symbol-container" active={Boolean(currency && currency.symbol)}>

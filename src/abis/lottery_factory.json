@@ -1,78 +1,64 @@
 [
 	{
-		"constant": false,
 		"inputs": [
 			{
+				"internalType": "address",
 				"name": "_manager",
 				"type": "address"
 			}
 		],
 		"name": "addManager",
 		"outputs": [],
-		"payable": false,
 		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
-		"constant": false,
 		"inputs": [],
 		"name": "clearManagers",
 		"outputs": [],
-		"payable": false,
 		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
-		"constant": false,
 		"inputs": [
 			{
+				"internalType": "string",
 				"name": "_name",
 				"type": "string"
 			},
 			{
+				"internalType": "address",
 				"name": "_manager",
 				"type": "address"
 			},
 			{
+				"internalType": "address",
 				"name": "_token",
 				"type": "address"
 			},
 			{
+				"internalType": "uint256",
 				"name": "_minAmount",
 				"type": "uint256"
 			},
 			{
+				"internalType": "uint256",
 				"name": "_startTime",
 				"type": "uint256"
 			},
 			{
+				"internalType": "uint256",
 				"name": "_stopTime",
 				"type": "uint256"
 			}
 		],
 		"name": "createLottery",
 		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "_manager",
-				"type": "address"
-			}
-		],
-		"name": "removeManager",
-		"outputs": [],
-		"payable": false,
 		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
 		"inputs": [],
-		"payable": false,
 		"stateMutability": "nonpayable",
 		"type": "constructor"
 	},
@@ -81,11 +67,13 @@
 		"inputs": [
 			{
 				"indexed": true,
+				"internalType": "address",
 				"name": "lotteryAddress",
 				"type": "address"
 			},
 			{
 				"indexed": false,
+				"internalType": "uint256",
 				"name": "length",
 				"type": "uint256"
 			}
@@ -94,37 +82,134 @@
 		"type": "event"
 	},
 	{
-		"constant": true,
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_lotteryAddress",
+				"type": "address"
+			}
+		],
+		"name": "luckyDraw",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_lotteryAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_amount",
+				"type": "uint256"
+			}
+		],
+		"name": "participate",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_lotteryAddress",
+				"type": "address"
+			}
+		],
+		"name": "pause",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_manager",
+				"type": "address"
+			}
+		],
+		"name": "removeManager",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_lotteryAddress",
+				"type": "address"
+			}
+		],
+		"name": "resume",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_token",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "_spender",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_amount",
+				"type": "uint256"
+			}
+		],
+		"name": "transferFrom",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
 		"inputs": [],
 		"name": "getAllLotteriesLength",
 		"outputs": [
 			{
+				"internalType": "uint256",
 				"name": "",
 				"type": "uint256"
 			}
 		],
-		"payable": false,
 		"stateMutability": "view",
 		"type": "function"
 	},
 	{
-		"constant": true,
 		"inputs": [],
 		"name": "getLastActiveLottery",
 		"outputs": [
 			{
+				"internalType": "address",
 				"name": "",
 				"type": "address"
 			}
 		],
-		"payable": false,
 		"stateMutability": "view",
 		"type": "function"
 	},
 	{
-		"constant": true,
 		"inputs": [
 			{
+				"internalType": "uint256",
 				"name": "",
 				"type": "uint256"
 			}
@@ -132,38 +217,43 @@
 		"name": "lotteries",
 		"outputs": [
 			{
+				"internalType": "address",
 				"name": "lotteryAddress",
 				"type": "address"
 			},
 			{
+				"internalType": "string",
 				"name": "name",
 				"type": "string"
 			},
 			{
+				"internalType": "uint256",
 				"name": "createTime",
 				"type": "uint256"
 			},
 			{
+				"internalType": "address",
 				"name": "managerAddress",
 				"type": "address"
 			},
 			{
+				"internalType": "uint256",
 				"name": "startTime",
 				"type": "uint256"
 			},
 			{
+				"internalType": "uint256",
 				"name": "stopTime",
 				"type": "uint256"
 			}
 		],
-		"payable": false,
 		"stateMutability": "view",
 		"type": "function"
 	},
 	{
-		"constant": true,
 		"inputs": [
 			{
+				"internalType": "uint256",
 				"name": "",
 				"type": "uint256"
 			}
@@ -171,25 +261,24 @@
 		"name": "managers",
 		"outputs": [
 			{
+				"internalType": "address",
 				"name": "",
 				"type": "address"
 			}
 		],
-		"payable": false,
 		"stateMutability": "view",
 		"type": "function"
 	},
 	{
-		"constant": true,
 		"inputs": [],
 		"name": "owner",
 		"outputs": [
 			{
+				"internalType": "address",
 				"name": "",
 				"type": "address"
 			}
 		],
-		"payable": false,
 		"stateMutability": "view",
 		"type": "function"
 	}
