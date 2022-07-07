@@ -11,7 +11,7 @@ import { SUPPORTED_LOCALES } from 'constants/locales'
 const Container = styled(ThemedText.Label)`
 
 `
-const LanguageSeperater = styled.span`
+const LanguageSeperater = styled(ThemedText.Language)`
   color: #ffffff;
   font-size: 16px;
   
@@ -47,7 +47,7 @@ const useTargetLocale = (activeLocale: SupportedLocale) => {
   // return null
 }
 
-export function SwitchLocaleLink() {
+export function SwitchLocaleLink({color="#fff"}:{color?:string|null}) {
   const activeLocale = useActiveLocale()
   const targetLocale = useTargetLocale(activeLocale)
   const { to, onClick } = useLocationLinkProps(targetLocale)
@@ -59,16 +59,16 @@ export function SwitchLocaleLink() {
         (activeLocale === "zh-CN" && (
           <>
             <StyledInternalLink onClick={onClick} to={to} color="#1f128d !important">
-              <Language color="#fff" display="inline" style={{ textDecoration: 'underline'}}>EN</Language>
-            </StyledInternalLink><LanguageSeperater> / </LanguageSeperater><Language color="#fff" display="inline" opacity="0.5">中文</Language>
+              <Language color={color} display="inline" style={{ textDecoration: 'underline'}}>EN</Language>
+            </StyledInternalLink><LanguageSeperater  display="inline" color={color}> / </LanguageSeperater><Language color={color} display="inline" opacity="0.5">中文</Language>
           </>
         )
         )
         ||
         <>
-          <Language color="#fff" display="inline"  opacity="0.5">EN</Language><LanguageSeperater> / </LanguageSeperater>
+          <Language color={color} display="inline"  opacity="0.5">EN</Language><LanguageSeperater display="inline" color={color}> / </LanguageSeperater>
           <StyledInternalLink onClick={onClick} to={to} color="#1f128d !important">
-            <Language color="#fff" display="inline"  style={{ textDecoration: 'underline'}}>中文</Language>
+            <Language color={color} display="inline"  style={{ textDecoration: 'underline'}}>中文</Language>
           </StyledInternalLink>
         </>
       }
