@@ -139,9 +139,9 @@ const TextValueBigger = styled(TextValue)`
   `};
 `
 const TextValueLong = styled(TextValue)`
-  font-size: 14pt !important;
+  font-size: 11pt !important;
   ${({ theme }) => theme.mediaWidth.upToLarge`
-      font-size: 3vw !important;
+      font-size: 2.5vw !important;
   `};
  `
 const TextWrapper = styled(ThemedText.Main)`
@@ -230,8 +230,8 @@ export default function Lottery({ history }: RouteComponentProps) {
   const [depositedAmount, entryTime] = useUserLotteryInfo(account, lotteryContract, coinToken)
   const [approvalState, approveCallback] = useApproveCallback(lotteryDetail?.minAmount, lotteryFactoryAddress)
   const [players, loadingPlayers] = useLotteryPlayerPage(playerCurPage, playerPageSize, lotteryContract)
-
   const locale = useActiveLocale()
+  const hasWinner = lotteryDetail?.winner && lotteryDetail.winner != ZERO_ADDRESS
   useInterval(() => {
     if (lotteryDetail && lotteryDetail.stopTime) {
       const rt = lotteryDetail?.stopTime - Date.now().valueOf() / 1000
@@ -419,17 +419,17 @@ export default function Lottery({ history }: RouteComponentProps) {
     setShowLotteryList(false)
   }, [onUserInput, onLotterySelection, setShowLotteryList])
 
-  const formatNum = useCallback((num:number):string=>{
+  const formatNum = useCallback((num: number): string => {
     const m = num.toString();
     const len = m.length;
     if (len <= 3) return m;
     const n = len % 3;
     if (n > 0) {
-        return m.slice(0,n)+","+m.slice(n,len)?.match(/\d{3}/g)?.join(",")
+      return m.slice(0, n) + "," + m.slice(n, len)?.match(/\d{3}/g)?.join(",")
     } else {
-        return m.slice(n,len)?.match(/\d{3}/g)?.join(",")||m
+      return m.slice(n, len)?.match(/\d{3}/g)?.join(",") || m
     }
-  },[])
+  }, [])
   return (
     <>
       <TopSection gap="md">
@@ -457,7 +457,7 @@ export default function Lottery({ history }: RouteComponentProps) {
                 </ThemedText.White>
               </RowBetween>
               <RowBetween>
-                <ThemedText.Yellow fontWeight={locale === "zh-CN" ? 600: 500}>
+                <ThemedText.Yellow fontWeight={locale === "zh-CN" ? 600 : 500}>
                   <Trans>*Lottery pools are run on the blockchain. Our game code is fully open source. Final interpretation is at the organizer&apos;s discretion.</Trans>
                 </ThemedText.Yellow>
               </RowBetween>
@@ -562,12 +562,14 @@ export default function Lottery({ history }: RouteComponentProps) {
           }
           {
             lotteryDetail?.state === LotteryState.Finish && <DetailInfoRow>
-              <DetailInfoCard>
-                <TextTitle><Trans>Winner</Trans></TextTitle>
-                <TextValueLong>{
+              <DetailInfoCard style={{ backgroundColor: hasWinner ? "#E8006F" : theme.bg1 }}>
+                <TextTitle style={{ color: hasWinner ? "#ffffff" : theme.text1 }}>
+                  <Trans>Winner</Trans>
+                </TextTitle>
+                <TextValueLong style={{ color: hasWinner ? "#ffffff" : theme.text1 }}>{
                   (loadingLottery && <LoadingDataView />)
                   ||
-                  ((lotteryDetail?.winner && lotteryDetail.winner !== ZERO_ADDRESS) && <span style={{ fontWeight: 700 }}>{lotteryDetail?.winner}</span>)
+                  (hasWinner && <span style={{ fontWeight: 700 }}>{lotteryDetail?.winner}</span>)
                   ||
                   ((lotteryDetail?.state && lotteryDetail?.state === LotteryState.Finish) && <Trans>No Winner</Trans>)
                   ||
