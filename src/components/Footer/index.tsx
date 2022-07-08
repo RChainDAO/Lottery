@@ -22,24 +22,30 @@ const FooterRow = styled(RowBetween)`
     font-size: 12px;
 `};
 `
-
+const FooterRowSmall = styled(RowBetween)`
+    font-size: 12px;
+    
+  ${({ theme }) => theme.mediaWidth.upToSmall`
+    font-size: 10px;
+`};
+`
 export default function Footer() {
 
   const theme = useContext(ThemeContext)
 
   return <>
-    <FooterRow color={theme.text2}>
+    <FooterRowSmall color={theme.text2}>
       <RowFixed>
       </RowFixed>
       <RowFixed>
         <Link
-          style={{ color: theme.text2, paddingBottom: '2px', borderBottom: "solid 1px", fontStyle: 'italic' }} 
+          style={{ color: theme.text2, paddingBottom: '2px', fontWeight:300, borderBottom: "solid 1px", fontStyle: 'italic' }} 
           href="https://rchaindao.com/terms_of_service/"
           target="_blank"
         ><Trans>Terms of Service</Trans>
         </Link>
       </RowFixed>
-    </FooterRow>
+    </FooterRowSmall>
     <FooterRow color={theme.text2} marginTop={1}>
       <RowFixed>
         <Link style={{ color: theme.text2, paddingBottom: '2px', borderBottom: "solid 1px", fontStyle: 'italic' }} href="https://rchaindao.com/" target="_blank" >
