@@ -2,16 +2,18 @@ import { constructSameAddressMap } from '../utils/constructSameAddressMap'
 import { SupportedChainId } from './chains'
 
 type AddressMap = { [chainId: number]: string }
-export const LOTTERY_FACTORY_ADDRESS: AddressMap = constructSameAddressMap('0x22f053D4B8099AC19A203034719A58427636eb3f',[
-  SupportedChainId.TESTNET
+export const LOTTERY_FACTORY_ADDRESS: AddressMap = constructSameAddressMap('0xb94579149647a77A5880ba6b39Fd371Ca417f5c5',[
+  SupportedChainId.TESTNET,
+  SupportedChainId.MAINNET,
 ])
 
-export const LOTTERY_COIN_ADDRESS: AddressMap = constructSameAddressMap('0x973Ff94d2357a43dF83da6075822855804FDC410',[
-  SupportedChainId.TESTNET
+export const LOTTERY_COIN_ADDRESS: AddressMap = constructSameAddressMap('0xc8754E609cb35C1D04D50734761beC38b7dA9278',[
+  SupportedChainId.TESTNET,
+  SupportedChainId.MAINNET,
 ])
 
 export const MULTICALL_ADDRESS: AddressMap = {
-  ...constructSameAddressMap('0xaD0D0F9eC2e31e6f76087bf6d6d2F2631aEc95eA', [
+  ...constructSameAddressMap('0x1F98415757620B543A52E61c46B32eB19261F984', [
     SupportedChainId.TESTNET,
     SupportedChainId.MAINNET,
   ])

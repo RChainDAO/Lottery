@@ -14,8 +14,9 @@ export enum LotteryState {
     Running = 0,
     Pausing = 1,
     Finish = 2,
-    WaitStart = 3,
-    WaitLucyDraw = 4
+    Disable = 3,
+    WaitStart = 4,
+    WaitLucyDraw = 5
 }
 
 interface LotteryPlayer {
@@ -331,12 +332,14 @@ export function useLotteryDetailInfo(
             }
             if (stateResult.result && startTimeResult.result && stopTimeResult.result) {
                 ret.state = Number.parseInt(stateResult.result.toString())
-                const now = new Date().getTime() / 1000
-                if (ret.startTime && now < ret.startTime) {
-                    ret.state = LotteryState.WaitStart
-                }
-                else if (ret.stopTime && now > ret.stopTime && ret.state !== LotteryState.Finish) {
-                    ret.state = LotteryState.WaitLucyDraw
+                if(ret.state != LotteryState.Disable){
+                    const now = new Date().getTime() / 1000
+                    if (ret.startTime && now < ret.startTime) {
+                        ret.state = LotteryState.WaitStart
+                    }
+                    else if (ret.stopTime && now > ret.stopTime && ret.state !== LotteryState.Finish) {
+                        ret.state = LotteryState.WaitLucyDraw
+                    }
                 }
             }
             return ret

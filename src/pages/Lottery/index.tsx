@@ -383,6 +383,9 @@ export default function Lottery({ history }: RouteComponentProps) {
       else if (lotteryDetail?.state === LotteryState.Pausing) {
         return t`Pausing`
       }
+      else if (lotteryDetail?.state === LotteryState.Disable) {
+        return t`Canceled`
+      }
       const day = Math.floor(remainTime / (3600 * 24));
       const hour = Math.floor(remainTime % (3600 * 24) / 3600);
       const min = Math.floor(remainTime % 3600 / 60);
@@ -523,6 +526,8 @@ export default function Lottery({ history }: RouteComponentProps) {
                 ((lotteryDetail?.state === LotteryState.WaitStart) && <Trans>Pending</Trans>)
                 ||
                 ((lotteryDetail?.state === LotteryState.Pausing) && <Trans>Pausing</Trans>)
+                ||
+                ((lotteryDetail?.state === LotteryState.Disable) && <Trans>Canceled</Trans>)
               }</TextValue>
             </DetailInfoCard>
           </DetailInfoRow>

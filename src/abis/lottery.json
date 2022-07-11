@@ -37,6 +37,18 @@
 	},
 	{
 		"anonymous": false,
+		"inputs": [],
+		"name": "LotteryDisable",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [],
+		"name": "LotteryEnable",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
 		"inputs": [
 			{
 				"indexed": true,
@@ -84,6 +96,20 @@
 		"inputs": [],
 		"name": "LotteryResume",
 		"type": "event"
+	},
+	{
+		"inputs": [],
+		"name": "disable",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "enable",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
 	},
 	{
 		"inputs": [
@@ -161,6 +187,19 @@
 				"internalType": "uint256",
 				"name": "",
 				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "isOpen",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
 			}
 		],
 		"stateMutability": "view",
@@ -272,6 +311,19 @@
 				"internalType": "address",
 				"name": "",
 				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "preLotteryState",
+		"outputs": [
+			{
+				"internalType": "enum MyLottery.LOTTERY_STATE",
+				"name": "",
+				"type": "uint8"
 			}
 		],
 		"stateMutability": "view",

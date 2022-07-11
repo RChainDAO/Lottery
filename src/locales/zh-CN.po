@@ -593,3 +593,8 @@ msgstr "质押"
 #: src/components/Footer/index.tsx
 msgid "Terms of Service"
 msgstr "服务条款"
+
+#: src/pages/Lottery/index.tsx
+#: src/pages/LotteryFactory/index.tsx
+msgid "Canceled"
+msgstr "已取消"

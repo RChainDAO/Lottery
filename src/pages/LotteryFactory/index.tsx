@@ -435,7 +435,19 @@ export default function LotteryFactory({ history }: RouteComponentProps) {
             </AutoColumn>
             <AutoColumn justify="center" gap="md">
               <ThemedText.Body>
-                <Trans>State</Trans>: {detail?.state === LotteryState.Running ? t`Running` : (detail?.state === LotteryState.Pausing ? t`Pausing` : t`Finished`)}
+                <Trans>State</Trans>: {
+                  ((detail?.state === LotteryState.Running) && <Trans>Running</Trans>)
+                  ||
+                  ((detail?.state === LotteryState.Finish) && <Trans>Finished</Trans>)
+                  ||
+                  ((detail?.state === LotteryState.WaitLucyDraw) && <Trans>Wait Luck Draw</Trans>)
+                  ||
+                  ((detail?.state === LotteryState.WaitStart) && <Trans>Pending</Trans>)
+                  ||
+                  ((detail?.state === LotteryState.Pausing) && <Trans>Pausing</Trans>)
+                  ||
+                  ((detail?.state === LotteryState.Disable) && <Trans>Canceled</Trans>)
+                }
               </ThemedText.Body>
             </AutoColumn>
             <AutoColumn justify="center" gap="md">
