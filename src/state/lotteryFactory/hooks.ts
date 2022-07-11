@@ -115,9 +115,9 @@ export function useLotteryPage(page?: number | undefined, pageSize?: number | un
         }
         return []
     }, [page, pageSize])
-    const playerResults = useSingleContractMultipleData(contract, "lotteries", idxArgs, undefined)
-    const playerInfos = useMemo(() => {
-        const ret = playerResults
+    const lotteryResults = useSingleContractMultipleData(contract, "lotteries", idxArgs, undefined)
+    const lotteryInfos = useMemo(() => {
+        const ret = lotteryResults
             .map(({ result }) => result)
             //.filter((result): result is CallStateResult => !!result)
             .map((result) => {
@@ -142,8 +142,8 @@ export function useLotteryPage(page?: number | undefined, pageSize?: number | un
                 return player
             })
         return ret
-    }, [playerResults])
-    return playerInfos
+    }, [lotteryResults])
+    return lotteryInfos
 }
 
 
