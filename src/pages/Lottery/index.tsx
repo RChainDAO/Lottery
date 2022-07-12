@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-restricted-imports
 import { t, Trans } from '@lingui/macro'
-import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import useActiveWeb3React from 'hooks/useActiveWeb3React'
 import { useCallback, useContext, useMemo, useState } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
@@ -38,7 +38,7 @@ import { CardSection, DataCard } from 'components/earn/styled'
 import { shortenAddress } from 'utils'
 import useInterval from 'lib/hooks/useInterval'
 import { useActiveLocale } from 'hooks/useActiveLocale'
-import JSBI from 'jsbi'
+import { ReactComponent as Close } from '../../assets/images/x.svg'
 
 const WrapperCard = styled.div`
   display: flex;
@@ -175,7 +175,7 @@ export const ShortLotteryAddress = styled.span`
     display: block;
   `};
   ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-    font-size: 11pt;
+    font-size: 10pt;
   `};
 `
 export const FullLotteryAddress = styled.span`
@@ -197,6 +197,22 @@ const Link = styled(ExternalLink)`
     outline: none;
     text-decoration: none;
 }`
+
+const CloseIcon = styled.div`
+  position: absolute;
+  right: 1rem;
+  top: 14px;
+  &:hover {
+    cursor: pointer;
+    opacity: 0.6;
+  }
+`
+
+const CloseColor = styled(Close)`
+  path {
+    stroke: ${({ theme }) => theme.text4};
+  }
+`
 
 export default function Lottery({ history }: RouteComponentProps) {
   const theme = useContext(ThemeContext)
@@ -231,7 +247,7 @@ export default function Lottery({ history }: RouteComponentProps) {
   const [approvalState, approveCallback] = useApproveCallback(lotteryDetail?.minAmount, lotteryFactoryAddress)
   const [players, loadingPlayers] = useLotteryPlayerPage(playerCurPage, playerPageSize, lotteryContract)
   const locale = useActiveLocale()
-  const hasWinner = lotteryDetail?.winner && lotteryDetail.winner != ZERO_ADDRESS
+  const hasWinner = lotteryDetail?.winner && lotteryDetail.winner !== ZERO_ADDRESS
   useInterval(() => {
     if (lotteryDetail && lotteryDetail.stopTime) {
       const rt = lotteryDetail?.stopTime - Date.now().valueOf() / 1000
@@ -389,15 +405,13 @@ export default function Lottery({ history }: RouteComponentProps) {
       const day = Math.floor(remainTime / (3600 * 24));
       const hour = Math.floor(remainTime % (3600 * 24) / 3600);
       const min = Math.floor(remainTime % 3600 / 60);
-      const sec = Math.floor(remainTime % 60);
       const dayDesc = day > 1 ? t`Days` : t`Day`
       const hourDesc = hour > 1 ? t`Hours` : t`Hour`
       const minDesc = min > 1 ? t`Minutes` : t`Minute`
-      const secDesc = day > 1 ? t`Seconds` : t`Second`
       return day + " " + dayDesc + " " + hour + " " + hourDesc + " " + min + " " + minDesc
     }
     return ""
-  }, [remainTime, lotteryDetail?.state, locale])
+  }, [remainTime, lotteryDetail?.state])
 
   const currencyInfo = (currency: CurrencyAmount<Currency> | undefined) => {
     if (!currency) {
@@ -678,6 +692,11 @@ export default function Lottery({ history }: RouteComponentProps) {
               <TextWrapper>
                 <Trans>Lotteries list</Trans>:
               </TextWrapper>
+            </RowFixed>
+            <RowFixed>
+              <CloseIcon onClick={onLotteryListDismiss}>
+                <CloseColor />
+              </CloseIcon>
             </RowFixed>
           </RowBetween>
           <RowBetween flex="1" flexDirection="column">

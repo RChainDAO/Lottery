@@ -219,6 +219,10 @@ msgid "Lotteries list"
 msgstr "彩票合约列表"
 
 #: src/pages/Lottery/index.tsx
+msgid "Lottery: {0}"
+msgstr "彩票合约: {0}"
+
+#: src/pages/Lottery/index.tsx
 msgid "Lottery: {selectedLottery}"
 msgstr "彩票合约: {selectedLottery}"
 

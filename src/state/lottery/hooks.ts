@@ -332,7 +332,7 @@ export function useLotteryDetailInfo(
             }
             if (stateResult.result && startTimeResult.result && stopTimeResult.result) {
                 ret.state = Number.parseInt(stateResult.result.toString())
-                if(ret.state != LotteryState.Disable){
+                if(ret.state !== LotteryState.Disable){
                     const now = new Date().getTime() / 1000
                     if (ret.startTime && now < ret.startTime) {
                         ret.state = LotteryState.WaitStart

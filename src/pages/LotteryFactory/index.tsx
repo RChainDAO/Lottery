@@ -122,24 +122,6 @@ export default function LotteryFactory({ history }: RouteComponentProps) {
     }
   }, [lotteryPageSize])
 
-  const pacificDateTimeString2Timestamp = (pacificDateTimeStr: string): number => {
-    const localDateTime = new Date(pacificDateTimeStr)
-    const localTimestamp = localDateTime.getTime()
-    const possibleOffset = [-7 * 60 * 60 * 1000, -8 * 60 * 60 * 1000]
-    for (const idx in possibleOffset) {
-      const pacificOffset = localDateTime.getTimezoneOffset() * 60 * 1000 + possibleOffset[idx]
-      const localDateTime2 = new Date(localTimestamp - pacificOffset)
-      const pacificDateTimeString = localDateTime2.toLocaleString("en-US", {
-        timeZone: "America/Los_Angeles", hourCycle: "h24"
-      })
-      const arrDateTime = pacificDateTimeString.split(/ |,|:/)
-      if (+arrDateTime[2] === localDateTime.getHours()) {
-        return localDateTime2.getTime()
-      }
-    }
-    return 0
-  }
-
   const dateTimeDesc = (time: number | undefined) => {
     if (!time || time === 0) {
       return ""

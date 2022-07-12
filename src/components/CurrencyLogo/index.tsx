@@ -1,5 +1,4 @@
 import { Currency } from '@uniswap/sdk-core'
-import { LOTTERY_COIN_ADDRESS } from 'constants/addresses'
 import useCurrencyLogoURIs from 'lib/hooks/useCurrencyLogoURIs'
 import React from 'react'
 import styled from 'styled-components/macro'

@@ -8,7 +8,6 @@ import React, { useEffect, useRef, useState } from 'react'
 import {
   Check,
   ChevronLeft,
-  Globe,
   Info,
   Moon,
   Sun,
