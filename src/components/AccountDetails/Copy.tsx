@@ -5,12 +5,14 @@ import { CheckCircle, Copy } from 'react-feather'
 import styled from 'styled-components/macro'
 import { LinkStyledButton } from 'theme'
 
-const CopyIcon = styled(LinkStyledButton)`
+const CopyIcon = styled(LinkStyledButton)<{
+  fontSize:number
+}>`
   color: ${({ color, theme }) => color || theme.text3};
   flex-shrink: 0;
   display: flex;
   text-decoration: none;
-  font-size: 12px;
+  font-size: ${({fontSize})=>fontSize}px;
   :hover,
   :active,
   :focus {
@@ -18,9 +20,11 @@ const CopyIcon = styled(LinkStyledButton)`
     color: ${({ color, theme }) => color || theme.text2};
   }
 `
-const TransactionStatusText = styled.span`
+const TransactionStatusText = styled.span<{
+  fontSize: number
+}>`
   margin-left: 0.25rem;
-  font-size: 12px;
+  font-size: ${({fontSize})=> fontSize}px;
   ${({ theme }) => theme.flexRowNoWrap};
   align-items: center;
 `
@@ -28,10 +32,11 @@ const TransactionStatusText = styled.span`
 interface BaseProps {
   toCopy: string
   color?: string
+  size?: number
 }
 export type CopyHelperProps = BaseProps & Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, keyof BaseProps>
 
-export default function CopyHelper({ color, toCopy, children }: CopyHelperProps) {
+export default function CopyHelper({ color, toCopy, children,size = 12 }: CopyHelperProps) {
   const [isCopied, setCopied] = useCopyClipboard()
   const copy = useCallback((e) => {
     e.stopPropagation();
@@ -39,18 +44,18 @@ export default function CopyHelper({ color, toCopy, children }: CopyHelperProps)
   }, [toCopy, setCopied])
 
   return (
-    <CopyIcon style={{display: "inline-block"}} onClick={copy} color={color}>
+    <CopyIcon style={{display: "inline-block"}} fontSize={size} onClick={copy} color={color}>
       &nbsp;
       {isCopied ? (
-        <TransactionStatusText style={{display: "inline-block"}} >
-          <CheckCircle size={'12'} />
-          <TransactionStatusText  style={{display: "inline-block"}}>
+        <TransactionStatusText fontSize={size} style={{display: "inline-block"}} >
+          <CheckCircle size={size} />
+          <TransactionStatusText fontSize={size}  style={{display: "inline-block"}}>
             <Trans>Copied</Trans>
           </TransactionStatusText>
         </TransactionStatusText>
       ) : (
-        <TransactionStatusText style={{display: "inline-block"}} >
-          <Copy size={'12'} />
+        <TransactionStatusText fontSize={size} style={{display: "inline-block"}} >
+          <Copy size={size} />
         </TransactionStatusText>
       )}
       {isCopied ? '' : children}

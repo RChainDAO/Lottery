@@ -175,7 +175,7 @@ export const ShortLotteryAddress = styled.span`
     display: block;
   `};
   ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-    font-size: 10pt;
+    font-size: 8pt;
   `};
 `
 export const FullLotteryAddress = styled.span`
@@ -212,6 +212,10 @@ const CloseColor = styled(Close)`
   path {
     stroke: ${({ theme }) => theme.text4};
   }
+`
+
+const LotteryCopy = styled(Copy)`
+
 `
 
 export default function Lottery({ history }: RouteComponentProps) {
@@ -511,11 +515,11 @@ export default function Lottery({ history }: RouteComponentProps) {
               }
             </InlineText>
             {
-              selectedLottery && selectedLottery.length > 0 && <Copy toCopy={selectedLottery} style={{ display: "inline-block", marginLeft: "22px" }}>
+              selectedLottery && selectedLottery.length > 0 && <LotteryCopy size={8} toCopy={selectedLottery}>
                 <span style={{ marginLeft: '3px', display: "inline-block" }}>
                   <Trans>Copy Address</Trans>
                 </span>
-              </Copy>
+              </LotteryCopy>
             }
             <InlineText style={{ flex: "1" }}></InlineText>
             <ChevronDown size={24} />
