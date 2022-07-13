@@ -154,27 +154,33 @@ export const DateInput = ({
   const handleInput = useCallback(
     (event) => {
       let v = event.target.value;
-      if(v.length > 16){
-        return
-      }
-      if (/^[\d/\-\s:]*$/.test(v)) {
-        //mm/dd/yyyy hh:mm
-        if (v.length === 2 && /^\d{2}$/.test(v)) {
-          v = v + "/"
-        }
-        else if (v.length === 5 && /^\d{1,2}\/\d{2}$/.test(v)) {
-          v = v + "/"
-        }
-        else if (v.length === 10 && /^\d{1,2}\/\d{1,2}\/\d{4}$/.test(v)) {
-          v = v + " "
-        }
-        else if (v.length === 13 && /^\d{1,2}\/\d{1,2}\/\d{4}\s\d{2}$/.test(v)) {
-          v = v + ":"
-        }
+      //remove chars
+      if (v.length < value.length) {
         onUserInput(v)
       }
+      else {
+        if (v.length > 16) {
+          return
+        }
+        if (/^[\d/\-\s:]*$/.test(v)) {
+          //mm/dd/yyyy hh:mm
+          if (v.length === 2 && /^\d{2}$/.test(v)) {
+            v = v + "/"
+          }
+          else if (v.length === 5 && /^\d{1,2}\/\d{2}$/.test(v)) {
+            v = v + "/"
+          }
+          else if (v.length === 10 && /^\d{1,2}\/\d{1,2}\/\d{4}$/.test(v)) {
+            v = v + " "
+          }
+          else if (v.length === 13 && /^\d{1,2}\/\d{1,2}\/\d{4}\s\d{2}$/.test(v)) {
+            v = v + ":"
+          }
+          onUserInput(v)
+        }
+      }
     },
-    [onUserInput]
+    [onUserInput, value]
   )
 
   return (
