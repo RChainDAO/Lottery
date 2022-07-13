@@ -16,7 +16,7 @@ import { LOTTERY_COIN_ADDRESS, LOTTERY_FACTORY_ADDRESS } from 'constants/address
 import { LightGreyCard } from 'components/Card'
 import { RowBetween, RowFixed, FullRow } from 'components/Row'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
-import { useLotteryCount, useLotteryFactoryLocalState, useLotteryFactoryLocalActionHandlers, useLotteryPage } from 'state/lotteryFactory/hooks'
+import { useLotteryFactoryLocalState, useLotteryFactoryLocalActionHandlers, useLotteryPage } from 'state/lotteryFactory/hooks'
 import CustomPage from 'components/Pager'
 import { DateInput, TextInput } from 'components/TextInput'
 import { LotteryState, useLotteryDetailInfo } from 'state/lottery/hooks'
@@ -108,8 +108,7 @@ export default function LotteryFactory({ history }: RouteComponentProps) {
   const showConnectAWallet = Boolean(!account)
   const lotteryFactoryAddress = (account && chainId) ? LOTTERY_FACTORY_ADDRESS[chainId] : undefined;
   const lotteryFactoryContract = useLotteryFactoryContract(lotteryFactoryAddress, true)
-  const lotteryCount = useLotteryCount(lotteryFactoryContract)
-  const lotterise = useLotteryPage(curLotteryPage, lotteryPageSize, lotteryFactoryContract)
+  const [lotterise, lotteryCount] = useLotteryPage(curLotteryPage, lotteryPageSize, lotteryFactoryContract)
   const coinAddress = (account && chainId) ? LOTTERY_COIN_ADDRESS[chainId] : undefined;
   const coinToken = useToken(coinAddress) || undefined
   const [showLotteryDetail, setShowLotteryDetail] = useState(false)

@@ -26,7 +26,7 @@ import { useUserLotteryInfo, useLotteryDetailInfo, LotteryState, useLotteryLocal
 import CustomPage from 'components/Pager'
 import Toast from 'components/Toast'
 import { LoadingDataView } from 'components/ModalViews'
-import { useLotteryCount, useLotteryPage, useLastActiveLottery } from 'state/lotteryFactory/hooks'
+import { useLotteryPage, useLastActiveLottery } from 'state/lotteryFactory/hooks'
 import Modal from 'components/Modal'
 import Copy from 'components/AccountDetails/Copy'
 import { ExternalLink, ThemedText } from 'theme'
@@ -233,8 +233,7 @@ export default function Lottery({ history }: RouteComponentProps) {
   const lotteryFactoryAddress = (account && chainId) ? LOTTERY_FACTORY_ADDRESS[chainId] : undefined;
   const coinContract = useTokenContract(coinAddress, true)
   const lotteryFactoryContract = useLotteryFactoryContract(lotteryFactoryAddress, true)
-  const lotteryCount = useLotteryCount(lotteryFactoryContract)
-  const lotterises = useLotteryPage(lotteryCurPage, lotteryPageSize, lotteryFactoryContract)
+  const [lotterises, lotteryCount] = useLotteryPage(lotteryCurPage, lotteryPageSize, lotteryFactoryContract)
   const lastActiveLottery = useLastActiveLottery(lotteryFactoryContract)
   if (!account && !!selectedLottery) {
     onLotterySelection(undefined)
