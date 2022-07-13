@@ -244,7 +244,7 @@ msgstr "最小金额"
 
 #: src/pages/Lottery/index.tsx
 msgid "My Deposited"
-msgstr "我的质押"
+msgstr "我的存款"
 
 #: src/pages/LotteryFactory/index.tsx
 #: src/pages/LotteryFactory/index.tsx
@@ -473,11 +473,11 @@ msgstr "创建彩票合约成功，请等待区块确认"
 
 #: src/pages/Lottery/index.tsx
 msgid "deposit amount should bigger than {0}"
-msgstr "质押金额需大于等于 {0}"
+msgstr "注入金额需大于等于 {0}"
 
 #: src/pages/Lottery/index.tsx
 msgid "deposit success, please wait the block confirm."
-msgstr "质押成功，请等待区块确认"
+msgstr "注入成功，请等待区块确认"
 
 #: src/components/Pager/index.tsx
 msgid "go to"
@@ -509,7 +509,7 @@ msgstr "请先授权"
 
 #: src/pages/Lottery/index.tsx
 msgid "please enter the deposit amount"
-msgstr "请输入质押数量"
+msgstr "请输入注入数量"
 
 #: src/pages/LotteryFactory/index.tsx
 msgid "please enter the lottery name"
@@ -538,6 +538,14 @@ msgstr "结束时间需大于当前时间"
 #: src/pages/LotteryFactory/index.tsx
 msgid "stop time should greater than start time"
 msgstr "结束时间需大于开始时间"
+
+#: src/pages/LotteryFactory/index.tsx
+msgid "start time format error"
+msgstr "开始时间格式错误"
+
+#: src/pages/LotteryFactory/index.tsx
+msgid "stop time format error"
+msgstr "结束时间格式错误"
 
 #: src/pages/LotteryFactory/index.tsx
 msgid "token address error"
@@ -588,11 +596,11 @@ msgstr "通过连接钱包，您同意 RChain DAO 的 <0>服务条款</0>，并�
 
 #: src/pages/Lottery/index.tsx
 msgid "Add Deposit"
-msgstr "添加质押"
+msgstr "添加存款"
 
 #: src/pages/Lottery/index.tsx
 msgid "Deposit"
-msgstr "质押"
+msgstr "注入"
 
 #: src/components/Footer/index.tsx
 msgid "Terms of Service"

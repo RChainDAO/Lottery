@@ -199,9 +199,7 @@ const Link = styled(ExternalLink)`
 }`
 
 const CloseIcon = styled.div`
-  position: absolute;
-  right: 1rem;
-  top: 14px;
+  padding-right: 5px;
   &:hover {
     cursor: pointer;
     opacity: 0.6;
@@ -271,7 +269,7 @@ export default function Lottery({ history }: RouteComponentProps) {
     let ok = true
     await approveCallback().catch((err) => {
       ok = false
-      const msg = (err?.result?.error?.message) || (err?.data?.message)
+      const msg = (err?.result?.error?.message) || (err?.data?.message) || (err?.reason)
       if (msg) {
         Toast(msg)
       }
@@ -300,7 +298,7 @@ export default function Lottery({ history }: RouteComponentProps) {
     let ok = true
     lotteryContract.participate(amount).catch((err) => {
       ok = false
-      const msg = (err?.result?.error?.message) || (err?.data?.message)
+      const msg = (err?.result?.error?.message) || (err?.data?.message) || (err?.reason)
       if (msg) {
         Toast(msg)
       }
