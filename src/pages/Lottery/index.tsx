@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-restricted-imports
 import { t, Trans } from '@lingui/macro'
-import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import useActiveWeb3React from 'hooks/useActiveWeb3React'
 import { useCallback, useContext, useMemo, useState } from 'react'
 import { RouteComponentProps } from 'react-router-dom'
@@ -26,7 +26,7 @@ import { useUserLotteryInfo, useLotteryDetailInfo, LotteryState, useLotteryLocal
 import CustomPage from 'components/Pager'
 import Toast from 'components/Toast'
 import { LoadingDataView } from 'components/ModalViews'
-import { useLotteryCount, useLotteryPage, useLastActiveLottery } from 'state/lotteryFactory/hooks'
+import { useLotteryPage, useLastActiveLottery } from 'state/lotteryFactory/hooks'
 import Modal from 'components/Modal'
 import Copy from 'components/AccountDetails/Copy'
 import { ExternalLink, ThemedText } from 'theme'
@@ -38,7 +38,7 @@ import { CardSection, DataCard } from 'components/earn/styled'
 import { shortenAddress } from 'utils'
 import useInterval from 'lib/hooks/useInterval'
 import { useActiveLocale } from 'hooks/useActiveLocale'
-import JSBI from 'jsbi'
+import { ReactComponent as Close } from '../../assets/images/x.svg'
 
 const WrapperCard = styled.div`
   display: flex;
@@ -175,7 +175,7 @@ export const ShortLotteryAddress = styled.span`
     display: block;
   `};
   ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-    font-size: 11pt;
+    font-size: 8pt;
   `};
 `
 export const FullLotteryAddress = styled.span`
@@ -198,6 +198,24 @@ const Link = styled(ExternalLink)`
     text-decoration: none;
 }`
 
+const CloseIcon = styled.div`
+  padding-right: 5px;
+  &:hover {
+    cursor: pointer;
+    opacity: 0.6;
+  }
+`
+
+const CloseColor = styled(Close)`
+  path {
+    stroke: ${({ theme }) => theme.text4};
+  }
+`
+
+const LotteryCopy = styled(Copy)`
+
+`
+
 export default function Lottery({ history }: RouteComponentProps) {
   const theme = useContext(ThemeContext)
   const [lotteryPageSize, setLotteryPageSize] = useState(10)
@@ -215,8 +233,7 @@ export default function Lottery({ history }: RouteComponentProps) {
   const lotteryFactoryAddress = (account && chainId) ? LOTTERY_FACTORY_ADDRESS[chainId] : undefined;
   const coinContract = useTokenContract(coinAddress, true)
   const lotteryFactoryContract = useLotteryFactoryContract(lotteryFactoryAddress, true)
-  const lotteryCount = useLotteryCount(lotteryFactoryContract)
-  const lotterises = useLotteryPage(lotteryCurPage, lotteryPageSize, lotteryFactoryContract)
+  const [lotterises, lotteryCount] = useLotteryPage(lotteryCurPage, lotteryPageSize, lotteryFactoryContract)
   const lastActiveLottery = useLastActiveLottery(lotteryFactoryContract)
   if (!account && !!selectedLottery) {
     onLotterySelection(undefined)
@@ -231,7 +248,7 @@ export default function Lottery({ history }: RouteComponentProps) {
   const [approvalState, approveCallback] = useApproveCallback(lotteryDetail?.minAmount, lotteryFactoryAddress)
   const [players, loadingPlayers] = useLotteryPlayerPage(playerCurPage, playerPageSize, lotteryContract)
   const locale = useActiveLocale()
-  const hasWinner = lotteryDetail?.winner && lotteryDetail.winner != ZERO_ADDRESS
+  const hasWinner = lotteryDetail?.winner && lotteryDetail.winner !== ZERO_ADDRESS
   useInterval(() => {
     if (lotteryDetail && lotteryDetail.stopTime) {
       const rt = lotteryDetail?.stopTime - Date.now().valueOf() / 1000
@@ -251,7 +268,7 @@ export default function Lottery({ history }: RouteComponentProps) {
     let ok = true
     await approveCallback().catch((err) => {
       ok = false
-      const msg = (err?.result?.error?.message) || (err?.data?.message)
+      const msg = (err?.result?.error?.message) || (err?.data?.message) || (err?.reason)
       if (msg) {
         Toast(msg)
       }
@@ -280,7 +297,7 @@ export default function Lottery({ history }: RouteComponentProps) {
     let ok = true
     lotteryContract.participate(amount).catch((err) => {
       ok = false
-      const msg = (err?.result?.error?.message) || (err?.data?.message)
+      const msg = (err?.result?.error?.message) || (err?.data?.message) || (err?.reason)
       if (msg) {
         Toast(msg)
       }
@@ -389,15 +406,13 @@ export default function Lottery({ history }: RouteComponentProps) {
       const day = Math.floor(remainTime / (3600 * 24));
       const hour = Math.floor(remainTime % (3600 * 24) / 3600);
       const min = Math.floor(remainTime % 3600 / 60);
-      const sec = Math.floor(remainTime % 60);
       const dayDesc = day > 1 ? t`Days` : t`Day`
       const hourDesc = hour > 1 ? t`Hours` : t`Hour`
       const minDesc = min > 1 ? t`Minutes` : t`Minute`
-      const secDesc = day > 1 ? t`Seconds` : t`Second`
       return day + " " + dayDesc + " " + hour + " " + hourDesc + " " + min + " " + minDesc
     }
     return ""
-  }, [remainTime, lotteryDetail?.state, locale])
+  }, [remainTime, lotteryDetail?.state])
 
   const currencyInfo = (currency: CurrencyAmount<Currency> | undefined) => {
     if (!currency) {
@@ -497,11 +512,11 @@ export default function Lottery({ history }: RouteComponentProps) {
               }
             </InlineText>
             {
-              selectedLottery && selectedLottery.length > 0 && <Copy toCopy={selectedLottery} style={{ display: "inline-block", marginLeft: "22px" }}>
+              selectedLottery && selectedLottery.length > 0 && <LotteryCopy size={8} toCopy={selectedLottery}>
                 <span style={{ marginLeft: '3px', display: "inline-block" }}>
                   <Trans>Copy Address</Trans>
                 </span>
-              </Copy>
+              </LotteryCopy>
             }
             <InlineText style={{ flex: "1" }}></InlineText>
             <ChevronDown size={24} />
@@ -678,6 +693,11 @@ export default function Lottery({ history }: RouteComponentProps) {
               <TextWrapper>
                 <Trans>Lotteries list</Trans>:
               </TextWrapper>
+            </RowFixed>
+            <RowFixed>
+              <CloseIcon onClick={onLotteryListDismiss}>
+                <CloseColor />
+              </CloseIcon>
             </RowFixed>
           </RowBetween>
           <RowBetween flex="1" flexDirection="column">

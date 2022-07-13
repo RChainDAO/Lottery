@@ -1,13 +1,18 @@
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { useAppDispatch, useAppSelector } from '../hooks'
-import { useSingleContractMultipleData, useSingleCallResult } from 'lib/hooks/multicall'
+import { useSingleContractMultipleData, useSingleCallResult, useMultipleContractSingleData } from 'lib/hooks/multicall'
 import { useTokenContract } from 'hooks/useContract'
 import JSBI from 'jsbi'
 import { Lottery } from 'abis/types'
+import LotteryABI from 'abis/lottery.json'
+import { LotteryInterface } from 'abis/types/Lottery'
 import { useCallback, useMemo } from 'react'
 import { AppState } from '../index'
 import { LotteryField, selectLottery, typeInput, refreshRemainTime } from './actions'
+import { Interface } from 'ethers/lib/utils'
 
+
+const LOTTERY_INTERFACE = new Interface(LotteryABI) as LotteryInterface
 const DEFAULT_PAGE_SIZE = 10
 
 export enum LotteryState {
@@ -45,8 +50,8 @@ export function useLotteryLocalState(): AppState['lottery'] {
 
 export function useLotteryLocalActionHandlers(): {
     onUserInput: (field: LotteryField, typedValue: string) => void,
-    onLotterySelection: (lotteryAddress: string|undefined) => void,
-    onRefreshRemainTime: (remainTime: number|undefined) => void,
+    onLotterySelection: (lotteryAddress: string | undefined) => void,
+    onRefreshRemainTime: (remainTime: number | undefined) => void,
 } {
     const dispatch = useAppDispatch()
 
@@ -58,7 +63,7 @@ export function useLotteryLocalActionHandlers(): {
     )
 
     const onLotterySelection = useCallback(
-        (lotteryAddress: string|undefined) => {
+        (lotteryAddress: string | undefined) => {
             dispatch(
                 selectLottery({
                     lotteryAddress
@@ -69,9 +74,9 @@ export function useLotteryLocalActionHandlers(): {
     )
 
     const onRefreshRemainTime = useCallback(
-        (remainTime: number|undefined) => {
+        (remainTime: number | undefined) => {
             dispatch(
-               refreshRemainTime({remainTime})
+                refreshRemainTime({ remainTime })
             )
         },
         [dispatch]
@@ -305,16 +310,16 @@ export function useLotteryDetailInfo(
                 ret.totalAmount = CurrencyAmount.fromRawAmount(token, JSBI.BigInt(totalAmountResult.result.toString()))
             }
             if (prizeResult.result && token) {
-                if(ret.totalAmount?.greaterThan(0)){
+                if (ret.totalAmount?.greaterThan(0)) {
 
                 }
-                else{
+                else {
                     ret.prize = CurrencyAmount.fromRawAmount(token, JSBI.BigInt(prizeResult.result.toString()))
                 }
             }
             if (totalAmountResult.result && token) {
                 ret.totalAmount = CurrencyAmount.fromRawAmount(token, JSBI.BigInt(totalAmountResult.result.toString()))
-                if(ret.totalAmount?.greaterThan(0)){
+                if (ret.totalAmount?.greaterThan(0)) {
                     ret.prize = ret.totalAmount
                 }
             }
@@ -332,7 +337,7 @@ export function useLotteryDetailInfo(
             }
             if (stateResult.result && startTimeResult.result && stopTimeResult.result) {
                 ret.state = Number.parseInt(stateResult.result.toString())
-                if(ret.state != LotteryState.Disable){
+                if (ret.state !== LotteryState.Disable) {
                     const now = new Date().getTime() / 1000
                     if (ret.startTime && now < ret.startTime) {
                         ret.state = LotteryState.WaitStart
@@ -347,4 +352,31 @@ export function useLotteryDetailInfo(
         [token, nameResult, minAmountResult, lengthResult, prizeResult, totalAmountResult, winnerResult, startTimeResult, stopTimeResult, stateResult, managerResult]
     )
     return [retResult, anyLoading]
+}
+
+
+export function useMultipleLotteriesState(
+    lotteryAddresses: (string | undefined)[]
+): (number | undefined)[] {
+
+    const lotteryStateResults = useMultipleContractSingleData(lotteryAddresses, LOTTERY_INTERFACE,"lotteryState")
+
+    const retResult = useMemo(
+        () => {
+            const stateArr = []
+            if(lotteryStateResults){
+                for(const stateResult of lotteryStateResults){
+                    if(stateResult && stateResult.result){
+                        stateArr.push(Number.parseInt(stateResult.result.toString()))
+                    }
+                    else{
+                        stateArr.push(-1)
+                    }
+                }
+            }
+            return stateArr
+        },
+        [lotteryStateResults]
+    )
+    return retResult
 }

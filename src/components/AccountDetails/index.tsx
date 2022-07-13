@@ -349,7 +349,7 @@ export default function AccountDetails({
                             href={getExplorerLink(chainId, account, ExplorerDataType.ADDRESS)}
                           >
                             <LinkIcon size={16} />
-                            <span style={{ marginLeft: '4px' }}>
+                            <span style={{ marginLeft: '4px', fontSize:"12px" }}>
                               <Trans>View on Explorer</Trans>
                             </span>
                           </AddressLink>

@@ -5,18 +5,13 @@ import { CHAIN_INFO } from 'constants/chainInfo'
 import { SupportedChainId } from 'constants/chains'
 import useActiveWeb3React from 'hooks/useActiveWeb3React'
 import useTheme from 'hooks/useTheme'
-import { useCallback } from 'react'
 import { Text } from 'rebass'
 import { useDarkModeManager } from 'state/user/hooks'
 import { useNativeCurrencyBalances } from 'state/wallet/hooks'
 import styled from 'styled-components/macro'
-import { NotMediumOnly, NotSmallOnly } from 'theme'
-
 import { ReactComponent as Logo } from '../../assets/svg/logo.svg'
-import Menu from '../Menu'
 import Web3Status from '../Web3Status'
 import HolidayOrnament from './HolidayOrnament'
-import NetworkSelector from './NetworkSelector'
 
 const HeaderFrame = styled.div<{ showBackground: boolean }>`
   display: grid;
@@ -72,12 +67,6 @@ const HeaderElement = styled.div`
 
   ${({ theme }) => theme.mediaWidth.upToMedium`
     align-items: center;
-  `};
-`
-
-const HideSmallHeaderElement = styled(HeaderElement)`
-  ${({ theme }) => theme.mediaWidth.upToExtraSmall`
-  display: none;
   `};
 `
 

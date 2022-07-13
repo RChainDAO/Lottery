@@ -16,7 +16,7 @@ import { LOTTERY_COIN_ADDRESS, LOTTERY_FACTORY_ADDRESS } from 'constants/address
 import { LightGreyCard } from 'components/Card'
 import { RowBetween, RowFixed, FullRow } from 'components/Row'
 import tryParseCurrencyAmount from 'lib/utils/tryParseCurrencyAmount'
-import { useLotteryCount, useLotteryFactoryLocalState, useLotteryFactoryLocalActionHandlers, useLotteryPage } from 'state/lotteryFactory/hooks'
+import { useLotteryFactoryLocalState, useLotteryFactoryLocalActionHandlers, useLotteryPage } from 'state/lotteryFactory/hooks'
 import CustomPage from 'components/Pager'
 import { DateInput, TextInput } from 'components/TextInput'
 import { LotteryState, useLotteryDetailInfo } from 'state/lottery/hooks'
@@ -30,6 +30,14 @@ import { LotteryFactoryField } from 'state/lotteryFactory/actions'
 import { isAddress } from 'utils'
 import { useToken } from 'hooks/Tokens'
 import { useActiveLocale } from 'hooks/useActiveLocale'
+
+interface LotteryBaseInfo {
+  name: string
+  minAmount: string
+  manager: string
+  startTime: number
+  stopTime: number
+}
 
 const ContentWrapper = styled(AutoColumn)`
   width: 100%;
@@ -78,12 +86,18 @@ const MarginerSmall = styled.div`
   margin-top: 1rem;
 `
 
+const DetailRow = styled(AutoColumn)`
+  grid-template-columns: 110px 1fr;
+`
+
 
 export default function LotteryFactory({ history }: RouteComponentProps) {
   const theme = useContext(ThemeContext)
   const [lotteryPageSize, setLotteryPageSize] = useState(10)
   const [curLotteryPage, setCurLotteryPage] = useState(1)
   const [errorMsg, setErrorMsg] = useState("")
+  const [submitForm, setSubmitForm] = useState(false)
+  const [submitFormData, setSubmitFormData] = useState<LotteryBaseInfo>()
   const { MIN_AMOUNT, LOTTERY_NAME, LOTTERY_MANAGER, LOTTERY_STARTTIME, LOTTERY_STOPTIME } = useLotteryFactoryLocalState()
   const { onUserInput } = useLotteryFactoryLocalActionHandlers()
   const { account, chainId } = useActiveWeb3React()
@@ -94,8 +108,7 @@ export default function LotteryFactory({ history }: RouteComponentProps) {
   const showConnectAWallet = Boolean(!account)
   const lotteryFactoryAddress = (account && chainId) ? LOTTERY_FACTORY_ADDRESS[chainId] : undefined;
   const lotteryFactoryContract = useLotteryFactoryContract(lotteryFactoryAddress, true)
-  const lotteryCount = useLotteryCount(lotteryFactoryContract)
-  const lotterise = useLotteryPage(curLotteryPage, lotteryPageSize, lotteryFactoryContract)
+  const [lotterise, lotteryCount] = useLotteryPage(curLotteryPage, lotteryPageSize, lotteryFactoryContract)
   const coinAddress = (account && chainId) ? LOTTERY_COIN_ADDRESS[chainId] : undefined;
   const coinToken = useToken(coinAddress) || undefined
   const [showLotteryDetail, setShowLotteryDetail] = useState(false)
@@ -122,24 +135,6 @@ export default function LotteryFactory({ history }: RouteComponentProps) {
     }
   }, [lotteryPageSize])
 
-  const pacificDateTimeString2Timestamp = (pacificDateTimeStr: string): number => {
-    const localDateTime = new Date(pacificDateTimeStr)
-    const localTimestamp = localDateTime.getTime()
-    const possibleOffset = [-7 * 60 * 60 * 1000, -8 * 60 * 60 * 1000]
-    for (const idx in possibleOffset) {
-      const pacificOffset = localDateTime.getTimezoneOffset() * 60 * 1000 + possibleOffset[idx]
-      const localDateTime2 = new Date(localTimestamp - pacificOffset)
-      const pacificDateTimeString = localDateTime2.toLocaleString("en-US", {
-        timeZone: "America/Los_Angeles", hourCycle: "h24"
-      })
-      const arrDateTime = pacificDateTimeString.split(/ |,|:/)
-      if (+arrDateTime[2] === localDateTime.getHours()) {
-        return localDateTime2.getTime()
-      }
-    }
-    return 0
-  }
-
   const dateTimeDesc = (time: number | undefined) => {
     if (!time || time === 0) {
       return ""
@@ -157,7 +152,7 @@ export default function LotteryFactory({ history }: RouteComponentProps) {
     }
   }
 
-  const handleCreateLottery = useCallback(async () => {
+  const handleCreateLottery = useCallback(() => {
     const quotient = parsedAmount?.quotient;
     if (!LOTTERY_NAME.typedValue || LOTTERY_NAME.typedValue.length === 0) {
       Toast(t`please enter the lottery name`)
@@ -183,9 +178,16 @@ export default function LotteryFactory({ history }: RouteComponentProps) {
       Toast(t`token address error`)
       return
     }
-    const amount = quotient ? quotient.toString() : "0"
     const startTimestamp = new Date(LOTTERY_STARTTIME.typedValue).getTime() / 1000
     const stopTimeStamp = new Date(LOTTERY_STOPTIME.typedValue).getTime() / 1000
+    if (isNaN(startTimestamp)) {
+      Toast(t`start time format error`)
+      return
+    }
+    if (isNaN(stopTimeStamp)) {
+      Toast(t`stop time format error`)
+      return
+    }
     if (stopTimeStamp <= startTimestamp) {
       Toast(t`stop time should greater than start time`)
       return
@@ -194,19 +196,38 @@ export default function LotteryFactory({ history }: RouteComponentProps) {
       Toast(t`stop time should greater than current time`)
       return
     }
+    setSubmitFormData({
+      name: LOTTERY_NAME.typedValue,
+      startTime: startTimestamp,
+      stopTime: stopTimeStamp,
+      manager: LOTTERY_MANAGER.typedValue,
+      minAmount: MIN_AMOUNT.typedValue
+    })
+    setSubmitForm(true)
+  }, [MIN_AMOUNT.typedValue, LOTTERY_NAME.typedValue, LOTTERY_MANAGER.typedValue, LOTTERY_STARTTIME.typedValue, LOTTERY_STOPTIME.typedValue, coinToken, parsedAmount?.quotient])
+
+  const handleSubmitLottery = useCallback(async () => {
+    const quotient = parsedAmount?.quotient;
+    const amount = quotient ? quotient.toString() : "0"
     let ok = true
-    await lotteryFactoryContract?.createLottery(LOTTERY_NAME.typedValue, LOTTERY_MANAGER.typedValue, coinToken?.address ?? "", amount, startTimestamp, stopTimeStamp).catch((err) => {
-      if (err && err.data) {
-        setErrorMsg(err.data.message)
+    if (!submitFormData) {
+      return
+    }
+    await lotteryFactoryContract?.createLottery(submitFormData.name, submitFormData.manager, coinToken?.address ?? "", amount, submitFormData.startTime, submitFormData.stopTime).catch((err) => {
+      
+    const msg = (err?.result?.error?.message) || (err?.data?.message) || (err?.reason)
+    if (msg) {
+        setErrorMsg(msg)
       }
       ok = false
     }).finally(() => {
       if (ok) {
         Toast(t`create lottery success, please wait the block confirm.`)
         onUserInput(LotteryFactoryField.LOTTERY_NAME, "")
+        setSubmitForm(false)
       }
     })
-  }, [LOTTERY_NAME.typedValue, LOTTERY_MANAGER.typedValue, LOTTERY_STARTTIME.typedValue, LOTTERY_STOPTIME.typedValue, coinToken, parsedAmount?.quotient, onUserInput, lotteryFactoryContract])
+  }, [submitFormData, coinToken, parsedAmount?.quotient, onUserInput, lotteryFactoryContract])
 
   const handleShowLottery = useCallback(
     (address: string) => {
@@ -217,6 +238,10 @@ export default function LotteryFactory({ history }: RouteComponentProps) {
 
   const wrappedOndismiss = () => {
     setShowLotteryDetail(false)
+  }
+
+  const formOndismiss = () => {
+    setSubmitForm(false)
   }
 
   const onErrorDismiss = () => {
@@ -328,7 +353,7 @@ export default function LotteryFactory({ history }: RouteComponentProps) {
             </RowFixed>
             <RowFixed>
               <TextWrapper>
-                <DateInput value={LOTTERY_STARTTIME.typedValue} onUserInput={handleTypeStartTime} placeholder={t`Start Time`} fontSize="0.9rem" ></DateInput>
+                <DateInput value={LOTTERY_STARTTIME.typedValue} onUserInput={handleTypeStartTime} placeholder="mm/dd/yyyy hh:mm" fontSize="0.9rem" ></DateInput>
               </TextWrapper>
             </RowFixed>
           </FormRow>
@@ -340,7 +365,7 @@ export default function LotteryFactory({ history }: RouteComponentProps) {
             </RowFixed>
             <RowFixed>
               <TextWrapper>
-                <DateInput value={LOTTERY_STOPTIME.typedValue} onUserInput={handleTypeStopTime} placeholder={t`Stop Time`} fontSize="0.9rem" ></DateInput>
+                <DateInput value={LOTTERY_STOPTIME.typedValue} onUserInput={handleTypeStopTime} placeholder="mm/dd/yyyy hh:mm" fontSize="0.9rem" ></DateInput>
               </TextWrapper>
             </RowFixed>
           </FormRow>
@@ -401,41 +426,62 @@ export default function LotteryFactory({ history }: RouteComponentProps) {
               </ThemedText.MediumHeader>
               <CloseIcon onClick={wrappedOndismiss} />
             </RowBetween>
-            <AutoColumn justify="center" gap="md">
+            <AutoColumn>
               <ThemedText.Body>
-                <Trans>Address</Trans>: <Trans>{showLotteryAddress}</Trans>
+                <Trans>Address</Trans>:
+              </ThemedText.Body>
+              <ThemedText.Body>
+                {showLotteryAddress}
               </ThemedText.Body>
             </AutoColumn>
-            <AutoColumn justify="center" gap="md">
+            <DetailRow>
               <ThemedText.Body>
-                <Trans>Name</Trans>: <Trans>{detail?.name}</Trans>
+                <Trans>Name</Trans>:
               </ThemedText.Body>
-            </AutoColumn>
-            <AutoColumn justify="center" gap="md">
               <ThemedText.Body>
-                <Trans>Min Amount</Trans>: <Trans>{detail?.minAmount?.toExact()}</Trans> <Trans>{coinToken?.symbol}</Trans>
+                <Trans>{detail?.name}</Trans>
               </ThemedText.Body>
-            </AutoColumn>
-            <AutoColumn justify="center" gap="md">
+            </DetailRow>
+            <DetailRow>
               <ThemedText.Body>
-                <Trans>Player Count</Trans>: <Trans>{detail?.playerCount}</Trans>
+                <Trans>Min Amount</Trans>:
               </ThemedText.Body>
-            </AutoColumn>
-            <AutoColumn justify="center" gap="md">
               <ThemedText.Body>
-                <Trans>Pool Amount</Trans>: <Trans>{detail?.prize?.toExact()}</Trans> <Trans>{coinToken?.symbol}</Trans>
+                <Trans>{detail?.minAmount?.toExact()}</Trans> {coinToken?.symbol}
               </ThemedText.Body>
-            </AutoColumn>
-            <AutoColumn justify="center" gap="md">
+            </DetailRow>
+            <DetailRow>
               <ThemedText.Body>
-                <Trans>Manager</Trans>:<Text style={{ height: "auto", overflow: "hidden", maxWidth: "620px", display: "inline-block", whiteSpace: "nowrap", textOverflow: "ellipsis", msTextOverflow: "ellipsis" }}>
+                <Trans>Player Count</Trans>:
+              </ThemedText.Body>
+              <ThemedText.Body>
+                <Trans>{detail?.playerCount}</Trans>
+              </ThemedText.Body>
+            </DetailRow>
+            <DetailRow>
+              <ThemedText.Body>
+                <Trans>Pool Amount</Trans>:
+              </ThemedText.Body>
+              <ThemedText.Body>
+                <Trans>{detail?.prize?.toExact()}</Trans> <Trans>{coinToken?.symbol}</Trans>
+              </ThemedText.Body>
+            </DetailRow>
+            <AutoColumn>
+              <ThemedText.Body>
+                <Trans>Manager</Trans>:
+              </ThemedText.Body>
+              <ThemedText.Body>
+                <Text style={{ height: "auto", overflow: "hidden", maxWidth: "620px", display: "inline-block", whiteSpace: "nowrap", textOverflow: "ellipsis", msTextOverflow: "ellipsis" }}>
                   {detail?.manager}
                 </Text>
               </ThemedText.Body>
             </AutoColumn>
-            <AutoColumn justify="center" gap="md">
+            <DetailRow>
               <ThemedText.Body>
-                <Trans>State</Trans>: {
+                <Trans>State</Trans>:
+              </ThemedText.Body>
+              <ThemedText.Body>
+                {
                   ((detail?.state === LotteryState.Running) && <Trans>Running</Trans>)
                   ||
                   ((detail?.state === LotteryState.Finish) && <Trans>Finished</Trans>)
@@ -449,20 +495,30 @@ export default function LotteryFactory({ history }: RouteComponentProps) {
                   ((detail?.state === LotteryState.Disable) && <Trans>Canceled</Trans>)
                 }
               </ThemedText.Body>
-            </AutoColumn>
-            <AutoColumn justify="center" gap="md">
+            </DetailRow>
+
+            <DetailRow>
               <ThemedText.Body>
-                <Trans>Start Time</Trans>: <Trans>{dateTimeDesc(detail?.startTime)}</Trans>
+                <Trans>Start Time</Trans>
               </ThemedText.Body>
-            </AutoColumn>
-            <AutoColumn justify="center" gap="md">
               <ThemedText.Body>
-                <Trans>Stop Time</Trans>: <Trans>{dateTimeDesc(detail?.stopTime)}</Trans>
+                <Trans>{dateTimeDesc(detail?.startTime)}</Trans>
               </ThemedText.Body>
-            </AutoColumn>
-            <AutoColumn justify="center" gap="md">
+            </DetailRow>
+            <DetailRow>
               <ThemedText.Body>
-                <Text><Trans>Winner</Trans>:</Text><Text style={{ height: "auto", overflow: "hidden", maxWidth: "620px", display: "inline-block", whiteSpace: "nowrap", textOverflow: "ellipsis", msTextOverflow: "ellipsis" }}>
+                <Trans>Stop Time</Trans>:
+              </ThemedText.Body>
+              <ThemedText.Body>
+                <Trans>{dateTimeDesc(detail?.stopTime)}</Trans>
+              </ThemedText.Body>
+            </DetailRow>
+            <AutoColumn>
+              <ThemedText.Body>
+                <Text><Trans>Winner</Trans>:</Text>
+              </ThemedText.Body>
+              <ThemedText.Body>
+                <Text style={{ height: "auto", overflow: "hidden", maxWidth: "620px", display: "inline-block", whiteSpace: "nowrap", textOverflow: "ellipsis", msTextOverflow: "ellipsis" }}>
                   {detail?.winner}
                 </Text>
               </ThemedText.Body>
@@ -497,6 +553,74 @@ export default function LotteryFactory({ history }: RouteComponentProps) {
             </FullRow>
           </RowBetween>
         </ContentWrapper>
+      </Modal>
+      <Modal isOpen={submitForm} onDismiss={formOndismiss} maxHeight={90}>
+        {(
+          <ContentWrapper gap="lg">
+            <RowBetween>
+              <ThemedText.MediumHeader>
+                <Trans>Lottery Info Confirm</Trans>
+              </ThemedText.MediumHeader>
+              <CloseIcon onClick={formOndismiss} />
+            </RowBetween>
+            <DetailRow>
+              <ThemedText.Body>
+                <Trans>Name</Trans>:
+              </ThemedText.Body>
+              <ThemedText.Body>
+                <Trans>{submitFormData?.name}</Trans>
+              </ThemedText.Body>
+            </DetailRow>
+            <DetailRow>
+              <ThemedText.Body>
+                <Trans>Min Amount</Trans>:
+              </ThemedText.Body>
+              <ThemedText.Body>
+                <Trans>{submitFormData?.minAmount}</Trans> <Trans>{coinToken?.symbol}</Trans>
+              </ThemedText.Body>
+            </DetailRow>
+            <AutoColumn>
+              <ThemedText.Body>
+                <Trans>Manager</Trans>:
+              </ThemedText.Body>
+              <ThemedText.Body>
+                <Text style={{ height: "auto", overflow: "hidden", maxWidth: "620px", display: "inline-block", whiteSpace: "nowrap", textOverflow: "ellipsis", msTextOverflow: "ellipsis" }}>
+                  {submitFormData?.manager}
+                </Text>
+              </ThemedText.Body>
+            </AutoColumn>
+            <DetailRow>
+              <ThemedText.Body>
+                <Trans>Start Time</Trans>:
+              </ThemedText.Body>
+              <ThemedText.Body>
+                <Trans>{dateTimeDesc(submitFormData?.startTime)}</Trans>
+              </ThemedText.Body>
+            </DetailRow>
+            <DetailRow>
+              <ThemedText.Body>
+                <Trans>Stop Time</Trans>:
+              </ThemedText.Body>
+              <ThemedText.Body>
+                <Trans>{dateTimeDesc(submitFormData?.stopTime)}</Trans>
+              </ThemedText.Body>
+            </DetailRow>
+            <ButtonPrimary marginBottom={3} marginTop={5} onClick={handleSubmitLottery}>
+              <ThemedText.Label mb="4px">
+                <Trans>Submit</Trans>
+              </ThemedText.Label>
+            </ButtonPrimary>
+          </ContentWrapper>
+        )}
+        {isLoadingLottery && (
+          <LoadingView onDismiss={wrappedOndismiss}>
+            <AutoColumn gap="12px" justify={'center'}>
+              <ThemedText.Body fontSize={20}>
+                <Trans>Loading Lottery Info...</Trans>
+              </ThemedText.Body>
+            </AutoColumn>
+          </LoadingView>
+        )}
       </Modal>
       <MarginerSmall />
       <SwitchLocaleLink color={theme.darkMode ? "#fff" : "#000"} />
