@@ -49,7 +49,7 @@ export default function Footer() {
     <FooterRow color={theme.text2} marginTop={1}>
       <RowFixed>
         <Link style={{ color: theme.text2, paddingBottom: '2px', borderBottom: "solid 1px", fontStyle: 'italic' }} href="https://rchaindao.com/" target="_blank" >
-          <Trans>RChain DAO Foundation 2022</Trans>
+          <Trans>RDAO Foundation 2022</Trans>
         </Link>
       </RowFixed>
       <RowFixed>
