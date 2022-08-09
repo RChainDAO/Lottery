@@ -390,12 +390,12 @@ export default function WalletModal({
                 <AutoRow style={{ flexWrap: 'nowrap' }}>
                   <ThemedText.Body fontSize={12}>
                     <Trans>
-                      By connecting a wallet, you agree to RChain DAO’{' '}
+                      By connecting a wallet, you agree to RDAO’{' '}
                       <ExternalLink
                         style={{ textDecoration: 'underline' }}
                         href="https://rchaindao.com/terms_of_service/"
                       >Terms of Service
-                      </ExternalLink>{' '}and acknowledge that you have read and understand the RChain DAO Protocol Disclaimer.
+                      </ExternalLink>{' '}and acknowledge that you have read and understand the RDAO Protocol Disclaimer.
                     </Trans>
                   </ThemedText.Body>
                 </AutoRow>
