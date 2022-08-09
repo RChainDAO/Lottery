@@ -591,8 +591,8 @@ msgid "Showing {fromItemIdx} - {toItemIdx} out of {total}"
 msgstr "从{total} 中显示{fromItemIdx} - {toItemIdx}"
 
 #: src/components/WalletModal/index.tsx
-msgid "By connecting a wallet, you agree to RChain DAO’ <0>Terms of Service</0> and acknowledge that you have read and understand the RChain DAO Protocol Disclaimer."
-msgstr "通过连接钱包，您同意 RChain DAO 的 <0>服务条款</0>，并承认您已经阅读并理解 RChain DAO 的协议免责声明。"
+msgid "By connecting a wallet, you agree to RDAO’ <0>Terms of Service</0> and acknowledge that you have read and understand the RDAO Protocol Disclaimer."
+msgstr "通过连接钱包，您同意 RDAO 的 <0>服务条款</0>，并承认您已经阅读并理解 RDAO 的协议免责声明。"
 
 #: src/pages/Lottery/index.tsx
 msgid "Add Deposit"
