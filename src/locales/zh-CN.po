@@ -149,8 +149,8 @@ msgid "Disconnect"
 msgstr "断开"
 
 #: src/pages/Lottery/index.tsx
-msgid "Each participant only needs to pay 100 RDAOs in order to participate."
-msgstr "每位参与者参加只需要支付 100 个 RDAOs。"
+msgid "Each participant is required to pay the minimum RDAOs for participation. The excess will be calculated according to the same chance of winning."
+msgstr "每个参赛者都需要支付最低的 RDAOs 来参与。超出部分将根据相同的中奖几率计算。"
 
 #: src/components/Web3Status/index.tsx
 msgid "Error"
