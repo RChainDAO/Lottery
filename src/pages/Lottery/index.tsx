@@ -467,7 +467,7 @@ export default function Lottery({ history }: RouteComponentProps) {
                 <ThemedText.White fontSize={14}>
                   <ol>
                     <li> <Trans>When each round of the lottery pool begins, the organizer will transfer a certain amount of RDAOs to the lottery pool.</Trans></li>
-                    <li> <Trans>Each participant only needs to pay 100 RDAOs in order to participate.</Trans></li>
+                    <li> <Trans>Each participant is required to pay the minimum RDAOs for participation. The excess will be calculated according to the same chance of winning.</Trans></li>
                     <li> <Trans>All participating RDAOs are accumulated in the lottery pool.</Trans></li>
                     <li> <Trans>At the end of each round, one lucky player will be randomly selected by the blockchain.</Trans></li>
                     <li> <Trans>The lottery pool will then automatically transfer all accumulated RDAOs to the lucky player.</Trans></li>
